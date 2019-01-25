@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>BrainyDude Dashboard</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://apis.google.com/js/platform.js"></script>
+
+    <style>
+        body
+        {
+            font-family: "Lato", sans-serif;
+        }
+
+        .sidebar
+        {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: #111;
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 60px;
+        }
+
+        .sidebar a
+        {
+            padding: 8px 8px 8px 16px;
+            text-decoration: none;
+            font-size: 25px;
+            color: #818181;
+            display: block;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover
+        {
+            color: white;
+        }
+
+        .sidebar .closebtn
+        {
+            position: absolute;
+            top: 0;
+            right: 25px;
+            font-size: 36px;
+            margin-left: 50px;
+        }
+
+        .openbtn
+        {
+            font-size: 20px;
+            cursor: pointer;
+            background-color: #111;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+        }
+
+        .openbtn:hover
+        {
+            background-color: #444;
+        }
+
+        #main
+        {
+            transition: margin-left .5s;
+            padding: 16px;
+        }
+
+        /* for smaller screens */
+        @media screen and (max-height: 450px)
+        {
+            .sidebar {padding-top: 15px;}
+            .sidebar a {font-size: 18px;}
+        }
+
+        .tablink
+        {
+            background-color: gray;
+            color: black;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            font-size: 17px;
+            width: 25%;
+        }
+
+        .tablink:hover
+        {
+            background-color: #777;
+        }
+
+        .tabcontent
+        {
+            color: black;
+            display: none;
+            padding: 70px;
+            text-align: center;
+        }
+
+        #get_started {background-color: #ffcc66;}
+        #about {background-color: #b3b3ff;}
+        #unique {background-color: #ffb3d9;}
+        #contact_us {background-color: #6fdcdc;}
+    </style>
+    <script>
+        function openNav()
+        {
+            document.getElementById("mySidebar").style.width = "320px";
+            document.getElementById("main").style.marginLeft = "320px";
+        }
+
+        function closeNav()
+        {
+            document.getElementById("mySidebar").style.width = "0";
+                document.getElementById("main").style.marginLeft= "0";
+
+
+        }
+
+        function openCity(cityName,elmnt,color)
+        {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++)
+            {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tablink");
+            for (i = 0; i < tablinks.length; i++)
+            {
+                tablinks[i].style.backgroundColor = "";
+            }
+            document.getElementById(cityName).style.display = "block";
+            elmnt.style.backgroundColor = color;
+        }
+
+    </script>
+</head>
+
+<body>
+    <div id="mySidebar" class="sidebar">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
+        <br><br>
+        <center>
+            <a href="#"><img src="{{picture}}"></a><br>
+            <a href="#">Welcome, {{profile_name}}</a>
+            <a href="#">{{email_id}}</a><br><br><br>
+            <a href="#">Sign Out</a>
+        </center>
+    </div>
+
+    <div id="main">
+        <button class="openbtn" onclick="openNav()">☰ My Account</button>
+        <h2></h2><p></p>
+
+        <div id="get_started" class="tabcontent">
+            <h1>Become a</h1>
+            <img src="/static/brainydude_logo.png"/>
+        </div>
+
+        <div id="about" class="tabcontent">
+            <p> BrainyDude is a platform where the users can take online adaptive tests in any field. So, go ahead and wrack your brains right now!</p>
+        </div>
+
+        <div id="unique" class="tabcontent">
+            <p>analyze an argument and get scored!</p>
+            <p>stats: track your progress</p>
+            <p>preferences: a variety of preferences to choose from </p>
+        </div>
+
+        <div id="contact_us" class="tabcontent">
+            <h1>Questions? Comments? We are all ears. </h1>
+            <p> Mail to on brainydude@gmail.com </p>
+        </div>
+
+        <button class="tablink" onclick="openCity('get_started', this, '#ffcc66')" id="defaultOpen">Get Started</button>
+        <button class="tablink" onclick="openCity('about', this, '#b3b3ff')">About</button>
+        <button class="tablink" onclick="openCity('unique', this, '#ffb3d9')">How we are Unique</button>
+        <button class="tablink" onclick="openCity('contact_us', this, '#6fdcdc')">Contact Us</button>
+    </div>
+    <script>
+        // Get the element with id="defaultOpen" and click on it
+        document.getElementById("defaultOpen").click();
+    </script>
+
+</body>
+</html>

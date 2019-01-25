@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>BrainyDude</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <!-- containing CLIENT_ID for OAuth 2.0 to integrate Google Sign-In in the web app-->
+    <script type="text/javascript" src="../static/hello.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+
+    <style>
+        body, html
+        {
+            height: 100%;
+            margin: 0;
+        }
+
+        /* for background image */
+        .bg-image
+        {
+            background-image: url("/static/background_mainpage.jpg");
+            -webkit-filter: grayscale(20%) blur(8px);
+            filter:grayscale(20%) blur(8px);
+
+            height: 100%;
+            background-position: center;
+            background-repeat: repeat;
+            background-size: cover;
+        }
+
+        /* for text */
+        .bg-text
+        {
+            color: white;
+            font-weight: bold;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+            width: 80%;
+            padding: 20px;
+            text-align: center;
+        }
+
+        /* for logo */
+        img
+        {
+            -webkit-filter: grayscale(0%) hue-rotate(180deg) contrast(200%);
+            filter:grayscale(0%) hue-rotate(180deg) contrast(200%);
+        }
+
+        /* for dropdown button */
+        .dropbtn
+        {
+            background-color: darkorange;
+            color: white;
+            padding: 16px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .dropdown
+        {
+            position: relative;
+            display: inline-block;
+        }
+
+        /* for dropdown links */
+        .dropdown-content
+        {
+            display: none;
+            position: absolute;
+            font-size: 13px;
+            background-color: white;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+
+        /* for dropdown link text */
+        .dropdown-content a
+        {
+            color: black;
+            padding: 12px 16px;
+            display: block;
+        }
+
+        .dropdown-content a:hover {background-color: gray}
+        .dropdown:hover .dropdown-content {display: block}
+        .dropdown:hover .dropbtn {background-color: orange}
+    </style>
+
+    <script>
+        function onSignIn(googleUser)
+        {
+            var idToken = googleUser.getAuthResponse().id_token;
+            var profile = googleUser.getBasicProfile();
+
+            //console.log('Name: ' + profile.getName());
+            //console.log('Image URL: ' + profile.getImageUrl());
+            //console.log('Email: ' + profile.getEmail());
+
+            $.ajax
+            ({
+                type: 'POST',
+                url: "/get_started",
+                data: {'idToken': toString(idToken)},
+                error: function(e)
+                {
+                    console.log(e);
+                },
+                dataType: "json",
+                contentType: "application/json"
+            });
+
+            hideGetStartedButton(idToken, profile.getName());
+        }
+
+        function hideGetStartedButton(idToken, profileName)
+        {
+            document.getElementById("idToken").value = idToken;
+            if(idToken)
+            {
+                document.getElementById('getStartedBtn').innerHTML
+                    = 'Get Started, '.concat(profileName);
+                document.getElementById('getStarted').style.visibility = 'visible';
+            }
+            else
+            {
+                document.getElementById('getStarted').style.visibility = 'hidden';
+            }
+        }
+
+        function signOut()
+        {
+            var auth2 = gapi.auth2.getAuthInstance();
+            auth2.signOut().then
+            (
+                function()
+                {
+                    console.log('User signed out');
+                }
+            );
+            window.location.reload();
+        }
+
+        function submitForm()
+        {
+            document.tokenForm.submit();
+        }
+</script>
+</head>
+
+<body onload="hideGetStartedButton()">
+    <div class="bg-image"></div>
+    <div class="bg-text">
+        <br><br>
+        <img src="/static/brainydude_logo.png"/>
+        <h1 style="font-size:50px">An Adaptive Assessment Platform<h1>
+        <br>
+
+        <center><div class="g-signin2" data-onsuccess="onSignIn"></div></center>
+        <br>
+
+        <b>
+            <div class="dropdown" id="getStarted">
+                <button class="dropbtn" id="getStartedBtn"> </button>
+                <div class="dropdown-content">
+                    <form action="/get_started" method="post" name="tokenForm">
+                        <input type="hidden" id="idToken" name="idToken">
+                    </form>
+
+                    <a href=# onclick="submitForm()">Go to Dashboard</a>
+                    <a href="#" onclick="signOut()">Sign Out</a>
+                </div>
+            </div>
+        </b>
+    </div>
+
+</body>
+</html>

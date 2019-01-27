@@ -34,7 +34,8 @@ def get_started():
                     email_id = data['email']
                     picture = data['picture']
 
-        return render_template('dashboard.html', profile_name = profile_name, email_id = email_id, picture = picture)
+        return render_template('dashboard.html',
+            profile_name = profile_name, email_id = email_id, picture = picture)
 
     except:
         traceback.print_exc()

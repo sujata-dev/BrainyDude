@@ -226,6 +226,11 @@
             document.getElementById(cityName).style.display = "block";
             elmnt.style.backgroundColor = color;
         }
+
+        function signOut()
+        {
+            window.history.back();
+        }
     </script>
 </head>
 
@@ -237,7 +242,7 @@
             <a href="#"><img src="{{picture}}"></a><br>
             <a href="#">Welcome, {{profile_name}}</a>
             <a href="#">{{email_id}}</a><br><br><br>
-            <a href="#">Sign Out</a>
+            <a href="#" onclick="signOut()">Sign Out</a>
         </center>
     </div>
 

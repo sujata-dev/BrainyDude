@@ -14,7 +14,7 @@ def index():
     return render_template('mainpage.html')
 
 
-@app.route('/get_started', methods = ['GET', 'POST'])
+@app.route('/get_started', methods=['GET', 'POST'])
 def get_started():
     URL = "https://oauth2.googleapis.com/tokeninfo"
     try:
@@ -23,10 +23,10 @@ def get_started():
 
             profile_name = ""
             email_id = ""
-            picture=""
+            picture = ""
             if(id_token):
                 URL = URL + "?id_token=" + id_token
-                response = requests.get(url = URL)
+                response = requests.get(url=URL)
                 data = response.json()
 
                 if(data['name'] and data['email']):
@@ -34,13 +34,14 @@ def get_started():
                     email_id = data['email']
                     picture = data['picture']
 
-        return render_template('dashboard.html',
-            profile_name = profile_name, email_id = email_id, picture = picture)
+        return render_template(
+            'dashboard.html',
+            profile_name=profile_name,
+            email_id=email_id,
+            picture=picture)
 
-    except:
+    except BaseException:
         traceback.print_exc()
-
-
 
 
 if __name__ == '__main__':

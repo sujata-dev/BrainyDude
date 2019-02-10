@@ -231,6 +231,12 @@
         {
             window.history.back();
         }
+
+        function submitForm()
+        {
+            document.getElementById("idToken").value = '{{id_token}}';
+            document.tokenForm.submit();
+        }
     </script>
 </head>
 
@@ -326,7 +332,16 @@
         </div>
 
     <br><br>
-    <center><b><button class="demo_quiz_link">Need to practice? Take a demo quiz ⟶</button></b></center>
+    <center><b>
+        <form action="/quiz_rules" method="post" name="tokenForm">
+            <input type="hidden" id="idToken" name="idToken">
+        </form>
+        <a href=# onclick="submitForm()">
+            <button class="demo_quiz_link">
+            Need to practice? Take a demo quiz ⟶
+            </button>
+        </a>
+    </b></center>
     </div>
 </body>
 </html>

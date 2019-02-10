@@ -1,0 +1,277 @@
+<html>
+<head>
+    <title>Quiz</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+
+    <style>
+        body
+        {
+            font-family: "Lato", sans-serif;
+        }
+        .quespart
+        {
+            height: auto;
+            margin-left: 0px;
+            border-radius: 5px;
+        }
+        .name1
+        {
+            margin-top: 8px;
+            height: auto;
+            width: 100%;
+        }
+        .timer
+        {
+            margin-left: 0px;
+            border-radius: 5px;
+        }
+        .userim
+        {
+            width: 100px;
+            height: 100px;
+            margin-top: 5px;
+        }
+        .btn-danger
+        {
+            border: 1px solid #000;
+            margin-left: -20px;
+            margin-right: 0px;
+            margin-top: -5px;
+            width: 30px;
+            padding-left: 8px;
+            float: left;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+        }
+        .btn-success
+        {
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            width: 30px;
+            height: 30px;
+        }
+        .btn-basic
+        {
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            width: 30px;
+            height: 30px;
+            background-color: rgba(204,0,0,0.8);
+        }
+        .table.no-border tr td, .table.no-border tr
+        {
+            border-width: 0;
+        }
+        .ready
+        {
+            margin-top: 120px;
+            width: 100%;
+            height: 1px;
+            background-color: rgba(0,0,0,0.51);
+        }
+    </style>
+
+<script>
+    function quizOptions()
+    {
+        document.getElementById("optradioa").checked = false;
+        document.getElementById("optradiob").checked = false;
+        document.getElementById("optradioc").checked = false;
+        document.getElementById("optradiod").checked = false;
+        return false;
+    }
+
+    function submitButton()
+    {
+        document.getElementById("optradioa").value = '{{option_a}}';
+        document.getElementById("optradiob").value = '{{option_b}}';
+        document.getElementById("optradioc").value = '{{option_c}}';
+        document.getElementById("optradiod").value = '{{option_d}}';
+
+        var options = document.getElementsByName('optradio');
+        document.getElementById("idToken").value = '{{id_token}}';
+
+        var option_value;
+        for(var i = 0; i < options.length; i++)
+        {
+            if(options[i].checked)
+            {
+                option_value = options[i].value;
+            }
+        }
+
+        console.log(option_value);
+    }
+
+    window.onpopstate = function()
+    {
+        alert("Careful! If you go back, you will lose all your quiz responses.");
+    };
+    history.pushState({}, '');
+    </script>
+</head>
+
+<body>
+
+    <div class="container-fluid">
+        <br><br>
+        <div class="panel-group">
+            <div class="panel panel-primary name1">
+
+                <div class="panel-heading">
+                    <b style="font-size:18px;">STUDENT INFORMATION</b>
+                </div>
+
+                <div class="panel-body">
+                    <p name="userName" style="font-size:16px;">
+                        <b>Student Name:</b> {{profile_name}}
+                    </p>
+                    <p name="emailId" style="font-size:16px;">
+                        <b>Student Email:</b> {{email_id}}
+                    </p>
+                    <p name="branch" style="font-size:16px;">
+                        <b>Subject:</b> Miscellaneous
+                    </p>
+                    <p name="branch" style="font-size:16px;">
+                        <b>Question Type:</b> {{question_type}}
+                    </p>
+                    <p name="branch" style="font-size:16px;">
+                        <b>Difficulty Level:</b> {{difficulty_level}}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container-fluid">
+        <div class="row">
+            <form action="#" method="post">
+                <br><br>
+
+                <div class="quespart col-sm-9">
+                    <div class="panel-group" style="margin-top:5px;">
+                        <div class="panel panel-primary">
+
+
+                            <div class="panel-heading">
+
+                                <b style="font-size:18px;">Question {{question_no}}.</b>
+
+                            </div>
+
+                            <div class="panel-body">
+                                <p style="margin-top:10px;font-size:18px;padding:7px">{{question}} </p>
+
+                                <div class="radio">
+                                    <label><p style="font-size:15px">&nbsp;&nbsp;<input type="radio" name="optradio" id="optradioa" required> {{option_a}} </p></label>
+                                </div>
+
+                                <div class="radio">
+                                    <label><p style="font-size:15px">&nbsp;&nbsp;<input type="radio" name="optradio" id="optradiob">{{option_b}}</p></label>
+                                </div>
+
+                                <div class="radio">
+                                    <label><p style="font-size:15px">&nbsp;&nbsp;<input type="radio" name="optradio" id="optradioc">{{option_c}} </p></label>
+                                </div>
+
+                                <div class="radio">
+                                    <label><p style="font-size:15px">&nbsp;&nbsp;<input type="radio" name="optradio" id="optradiod">{{option_d}}</p></label>
+                                </div>
+
+                                <button type="reset" class="btn btn-info" style="margin-top:170px;" onclick="return quizOptions()">Clear Response</button>
+                                <form action="/demo_quiz" method="post" name="tokenForm">
+                                    <input type="hidden" id="idToken" name="idToken">
+
+                                </form>
+                                <button type="submit" class="btn btn-default" onclick="submitButton()" style="margin-top:170px; background-color:rgba(255,0,0,0.61); color:#FFF; float:right">Save & Next </button></a>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="timer col-sm-3">
+                    <div class="col-sm-12">
+                        <div class="col-sm-6">
+                            <img src="{{picture}}"  class="userim img-responsive"/>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <p style="margin-top:30px;"><b>TIME LEFT:</b></p>
+                            <b><p id="demo"></p></b>
+                        </div>
+                    </div>
+
+
+                    <div class="col-sm-12" style="margin-top:5px;">
+                        <br>
+                        <p><b><center>Question Pallet</center></b></p>
+                        <div class="table-responsive" style="overflow:hidden;">
+                            <table class="table table-condensed no-border" style="margin-left:15px; margin-top:4px; margin-bottom:0px;">
+                                <tbody>
+                                    <tr>
+                                        <td><button type="button" class="btn btn-danger btn-sm" name="flag" id="1" value="1">1</button></td>
+                                        <td><button type="button" class="btn btn-danger btn-sm" name="flag" id="2" value="2">2</button></td>
+                                        <td><button type="button" class="btn btn-danger btn-sm" name="flag" id="3" value="3">3</button></td>
+                                        <td><button type="button" class="btn btn-danger btn-sm" name="flag" id="4" value="4">4</button></td>
+                                        <td><button type="button" class="btn btn-danger btn-sm" name="flag" id="5" value="5">5</button></td>
+                                        <td><button type="button" class="btn btn-danger btn-sm" name="flag" id="6" value="6">6</button></td>
+                                        <td><button type="button" class="btn btn-danger btn-sm" name="flag" id="7" value="7">7</button></td>
+                                        <td><button type="button" class="btn btn-danger btn-sm" name="flag" id="8" value="8">8</button></td>
+                                    </tr>
+
+                                    <tr>
+                                        <td><button type="button" class="btn btn-danger btn-sm" name="flag" id="9" value="9">9</button></td>
+                                        <td><button type="button" class="btn btn-danger btn-sm" name="flag" id="10" value="10">10</button></td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12" style="margin-top:1px;"><hr>
+                        <p><button class="btn btn-success" ></button> &nbsp;You have answered the question.</p><br>
+                        <p><button class="btn btn-basic"></button> &nbsp;You have <b> not </b>answered the question.</p>
+                    </div>
+                    <br>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        var countDownDate = new Date("Feb 30, 2019 15:37:25").getTime();
+        var x = setInterval
+        (
+            function()
+            {
+                var now = new Date().getTime();
+                var distance = countDownDate - now;
+                var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                document.getElementById("demo").innerHTML = minutes + "m " + seconds + "s ";
+
+                if (distance < 0)
+                {
+                    clearInterval(x);
+                    document.getElementById("demo").innerHTML = "EXPIRED";
+                }
+            },
+            1000
+        );
+    </script>
+
+</body>
+</html>

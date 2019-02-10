@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Rules of the Quiz</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+
+    <style>
+        body
+        {
+            font-family: "Lato", sans-serif;
+        }
+        .rule
+        {
+            position: relative;
+            padding: 10px;
+            border-radius: 5px;
+            border: 2px solid blue;
+            width: 100%;
+            height: 100%;
+        }
+        .name1
+        {
+            margin-top: 8px;
+            height: auto;
+            width: 100%;
+        }
+        .timer
+        {
+            margin-left: 0px;
+            border-radius: 5px;
+        }
+        .userim
+        {
+            width: 100px;
+            height: 100px;
+            margin-top: 5px;
+        }
+        .btn-danger
+        {
+            border: 1px solid #000;
+            margin-left: -20px;
+            margin-right: 0px;
+            margin-top: -5px;
+            width: 30px;
+            padding-left: 8px;
+            float: left;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+        }
+        .btn-success
+        {
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            width: 30px;
+            height: 30px;
+        }
+        .btn-basic
+        {
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            width: 30px;
+            height: 30px;
+            background-color: rgba(204,0,0,0.8);
+        }
+        .table.no-border tr td, .table.no-border tr
+        {
+            border-width: 0;
+        }
+        .ready
+        {
+            margin-top: 120px;
+            width: 100%;
+            height: 1px;
+            background-color: rgba(0,0,0,0.51);
+        }
+</style>
+<script>
+    $(
+        function()
+        {
+            $("#chkbutton").click
+            (
+                function()
+                {
+                    if($(this).is(":checked"))
+                    {
+                        $("#dpbutton").show();
+                    }
+                    else
+                    {
+                        $("#dpbutton").hide();
+                    }
+                }
+            );
+        }
+    );
+
+    function submitForm()
+    {
+        document.getElementById("idToken").value = '{{id_token}}';
+        document.tokenForm.submit();
+    }
+</script>
+</head>
+
+
+<body>
+    <div class="container-fluid" style="width:100%;">
+        <div class="panel-group">
+            <br><br><br>
+            <div class="panel panel-primary name1">
+                <div class="panel-heading">
+                    <b><center style="font-size:20px;">IMPORTANT INSTRUCTIONS</center></b>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <br>
+    <div class="container-fluid" style="width:95%;">
+        <div class="row">
+            <div class="rule">
+                <br>
+                <ol type="1">
+                    <li><p style="font-size:15px;">This is an <b>adaptive test</b> i.e. the difficulty of each question is based on the person's ability to give the correct answers.</p></li>
+                    <li><p style="font-size:15px;">Time duration of the test is <b>20 minutes.</b></p></li>
+                    <li><p style="font-size:15px;">There are a total of <b>10 questions.</b></p></li>
+                    <li><p style="font-size:15px;">There is <b>no negative marking.</b></p></li>
+                    <li><p style="font-size:15px;">Each question has to be answered compulsorily.</p></li>
+                    <li><p style="font-size:15px;">There are <b>9 multiple choice type questions (MCQs)</b> with 4 alternative answers.</p></li>
+                    <li><p style="font-size:15px;">The quiz ends with a <b> subjective type</b> question which has to be answered within <b>50 words</b>.</p></li>
+                    <li><p style="font-size:15px;">The question palette is displayed on the right side of the screen which shows the status of each question using one of the following symbols:</p><br>
+                    <p style="font-size:15px;"><button class="btn btn-success" ></button> &nbsp;You have answered the question.</p>
+                    <p style="font-size:15px;"><button class="btn btn-basic"></button> &nbsp;You have <b> not </b>answered the question.</p></li>
+                    <br>
+                    <li><p style="font-size:15px;">To select your answer, select one of the 4 options.</p></li>
+                    <li><p style="font-size:15px;">To deselect your answer, click on the <b>Clear Response</b> button.</p></li>
+                    <li><p style="font-size:15px;">To save your answer, click on <b>Save & Next</b> button.</p></li>
+                    <li><p style="font-size:15px;">You will be able to view your result once the test is over.</p></li><br>
+                    </ol>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12" style="color:black;margin-top:10px;"><center>
+                <br>
+                <p style="font-size:15px;"><input id="chkbutton" type="checkbox" value="agree"> &nbsp;I have read and understood the instructions.</center></p>
+            </div>
+        </div>
+    </div>
+
+    <div id="dpbutton" style="display: none">
+        <br>
+        <form action="/demo_quiz" method="post" name="tokenForm">
+            <input type="hidden" id="idToken" name="idToken">
+        </form>
+        <center>
+            <a href=# onclick="submitForm()">
+            <button style="font-size:18px;color:white;" class="btn btn-primary">
+                <b>Start Test</b>
+            </button>
+            </a>
+        </center>
+    </div>
+
+</body>
+</html>

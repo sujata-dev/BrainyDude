@@ -44,20 +44,9 @@
             height: 100px;
             margin-top: 5px;
         }
-        .btn-danger
-        {
-            border: 1px solid #000;
-            margin-left: -20px;
-            margin-right: 0px;
-            margin-top: -5px;
-            width: 30px;
-            padding-left: 8px;
-            float: left;
-            border-bottom-left-radius: 20px;
-            border-bottom-right-radius: 20px;
-        }
         .btn-success
         {
+            border: 1px solid #000;
             border-bottom-left-radius: 20px;
             border-bottom-right-radius: 20px;
             width: 30px;
@@ -65,6 +54,7 @@
         }
         .btn-basic
         {
+            border: 1px solid #000;
             border-bottom-left-radius: 20px;
             border-bottom-right-radius: 20px;
             width: 30px;
@@ -106,7 +96,16 @@
 
     function submitForm()
     {
-        document.getElementById("idToken").value = '{{id_token}}';
+        //document.getElementById("idToken").value = '{{id_token}}';
+        //document.getElementById("topic").value = '{{topic}}'
+        if('{{topic}}' == "demo")
+        {
+            document.getElementById("tokenForm").action = "/demo_quiz";
+        }
+        if('{{topic}}' == "sports")
+        {
+            document.getElementById("tokenForm").action = "/sports_quiz";
+        }
         document.tokenForm.submit();
     }
 </script>
@@ -114,60 +113,100 @@
 
 
 <body>
-    <div class="container-fluid" style="width:100%;">
+    <div class="container-fluid" style="width: 100%;">
         <div class="panel-group">
             <br><br><br>
             <div class="panel panel-primary name1">
                 <div class="panel-heading">
-                    <b><center style="font-size:20px;">IMPORTANT INSTRUCTIONS</center></b>
+                    <b><center style="font-size: 20px;">
+                        IMPORTANT INSTRUCTIONS
+                    </center></b>
                 </div>
             </div>
         </div>
     </div>
 
     <br>
-    <div class="container-fluid" style="width:95%;">
+    <div class="container-fluid" style="width: 95%;">
         <div class="row">
-            <div class="rule">
-                <br>
+            <div class="rule"><br>
                 <ol type="1">
-                    <li><p style="font-size:15px;">This is an <b>adaptive test</b> i.e. the difficulty of each question is based on the person's ability to give the correct answers.</p></li>
-                    <li><p style="font-size:15px;">Time duration of the test is <b>20 minutes.</b></p></li>
-                    <li><p style="font-size:15px;">There are a total of <b>10 questions.</b></p></li>
-                    <li><p style="font-size:15px;">There is <b>no negative marking.</b></p></li>
-                    <li><p style="font-size:15px;">Each question has to be answered compulsorily.</p></li>
-                    <li><p style="font-size:15px;">There are <b>9 multiple choice type questions (MCQs)</b> with 4 alternative answers.</p></li>
-                    <li><p style="font-size:15px;">The quiz ends with a <b> subjective type</b> question which has to be answered within <b>50 words</b>.</p></li>
-                    <li><p style="font-size:15px;">The question palette is displayed on the right side of the screen which shows the status of each question using one of the following symbols:</p><br>
-                    <p style="font-size:15px;"><button class="btn btn-success" ></button> &nbsp;You have answered the question.</p>
-                    <p style="font-size:15px;"><button class="btn btn-basic"></button> &nbsp;You have <b> not </b>answered the question.</p></li>
-                    <br>
-                    <li><p style="font-size:15px;">To select your answer, select one of the 4 options.</p></li>
-                    <li><p style="font-size:15px;">To deselect your answer, click on the <b>Clear Response</b> button.</p></li>
-                    <li><p style="font-size:15px;">To save your answer, click on <b>Save & Next</b> button.</p></li>
-                    <li><p style="font-size:15px;">You will be able to view your result once the test is over.</p></li><br>
-                    </ol>
+                    <li><p style="font-size: 15px;">
+                        This is an <b>adaptive test</b> i.e. the difficulty of each question is based on the person's ability to give the correct answers.
+                    </p></li>
+                    <li><p style="font-size: 15px;">
+                        Time duration of the test is <b>20 minutes.</b>
+                    </p></li>
+                    <li><p style="font-size: 15px;">
+                        There are a total of <b>10 questions.</b>
+                    </p></li>
+                    <li><p style="font-size: 15px;">
+                        There is <b>no negative marking.</b>
+                    </p></li>
+                    <li><p style="font-size: 15px;">
+                        Each question has to be answered compulsorily.
+                    </p></li>
+                    <li><p style="font-size: 15px;">
+                        There are <b>9 multiple choice type questions (MCQs)</b> with 4 alternative answers.
+                    </p></li>
+                    <li><p style="font-size: 15px;">
+                        The quiz ends with a <b> subjective type</b> question which has to be answered within <b>50 words</b>.
+                    </p></li>
+                    <li>
+                        <p style="font-size: 15px;">
+                        The question palette is displayed on the right side of the screen which shows the status of each question using one of the following symbols:
+                        </p><br>
+
+                        <p style="font-size: 15px;">
+                            <button class="btn btn-success" ></button>
+                            &nbsp;You have answered the question.
+                        </p>
+                        <p style="font-size: 15px;">
+                            <button class="btn btn-basic"></button>
+                            &nbsp;You have <b> not </b>answered the question.
+                        </p>
+                    </li><br>
+
+                    <li><p style="font-size: 15px;">
+                        To select your answer, select one of the 4 options.
+                    </p></li>
+                    <li><p style="font-size: 15px;">
+                        To deselect your answer, click on the <b>Clear Response</b> button.
+                    </p></li>
+                    <li><p style="font-size: 15px;">
+                        To save your answer, click on <b>Save & Next</b> button.
+                    </p></li>
+                    <li><p style="font-size: 15px;">
+                        You will be able to view your result once the test is over.
+                    </p></li><br>
+                </ol>
             </div>
         </div>
     </div>
 
     <div class="container-fluid">
         <div class="row">
-            <div class="col-sm-12" style="color:black;margin-top:10px;"><center>
-                <br>
-                <p style="font-size:15px;"><input id="chkbutton" type="checkbox" value="agree"> &nbsp;I have read and understood the instructions.</center></p>
+            <div class="col-sm-12" style="color: black; margin-top: 10px;">
+                <center><br>
+                    <p style="font-size: 15px;">
+                        <input id="chkbutton" type="checkbox" value="agree">
+                        &nbsp;I have read and understood the instructions.
+                    </p>
+                </center>
             </div>
         </div>
     </div>
 
     <div id="dpbutton" style="display: none">
         <br>
-        <form action="/demo_quiz" method="post" name="tokenForm">
-            <input type="hidden" id="idToken" name="idToken">
+        <form method="post" name="tokenForm" id="tokenForm">
+            <input type="hidden" id="idToken" name="idToken" value="{{id_token}}">
+            <input type="hidden" id="topic" name="topic" value="{{topic}}">
         </form>
+
         <center>
             <a href=# onclick="submitForm()">
-            <button style="font-size:18px;color:white;" class="btn btn-primary">
+            <button style="font-size: 18px; color:white;" class="btn btn-primary">
                 <b>Start Test</b>
             </button>
             </a>

@@ -36,36 +36,29 @@
         }
         .userim
         {
+            border: 1px solid #000;
             width: 100px;
             height: 100px;
             margin-top: 5px;
         }
-        .btn-danger
-        {
-            border: 1px solid #000;
-            margin-left: -20px;
-            margin-right: 0px;
-            margin-top: -5px;
-            width: 30px;
-            padding-left: 8px;
-            float: left;
-            border-bottom-left-radius: 20px;
-            border-bottom-right-radius: 20px;
-        }
         .btn-success
         {
+            border: 1px solid #000;
             border-bottom-left-radius: 20px;
             border-bottom-right-radius: 20px;
-            width: 30px;
-            height: 30px;
+            width: 32px;
+            height: 32px;
+            color: #000000;
         }
         .btn-basic
         {
+            border: 1px solid #000;
             border-bottom-left-radius: 20px;
             border-bottom-right-radius: 20px;
-            width: 30px;
-            height: 30px;
+            width: 32px;
+            height: 32px;
             background-color: rgba(204,0,0,0.8);
+            color: #ffffff;
         }
         .table.no-border tr td, .table.no-border tr
         {
@@ -81,7 +74,16 @@
     </style>
 
 <script>
-    function quizOptions()
+    function palletColour()
+    {
+        question_no = '{{question_no}}';
+        for(var i = 1; i < question_no; i++)
+        {
+            id = i.toString();
+            document.getElementById(id).className = 'btn btn-success btn-sm';
+        }
+    }
+    function clearResponse()
     {
         document.getElementById("optradioa").checked = false;
         document.getElementById("optradiob").checked = false;
@@ -97,19 +99,22 @@
         document.getElementById("optradioc").value = '{{option_c}}';
         document.getElementById("optradiod").value = '{{option_d}}';
 
+        total_time = '{{time_limit}}';
+        time_taken_in_sec = (total_time * 60) - time_left_in_sec;
+
         var options = document.getElementsByName('optradio');
         document.getElementById("idToken").value = '{{id_token}}';
 
-        var option_value;
+        var answerTicked;
         for(var i = 0; i < options.length; i++)
         {
             if(options[i].checked)
             {
-                option_value = options[i].value;
+                answerTicked = options[i].value;
             }
         }
 
-        console.log(option_value);
+        document.getElementById("answerTicked").value = answerTicked;
     }
 
     window.onpopstate = function()
@@ -120,7 +125,7 @@
     </script>
 </head>
 
-<body>
+<body onload="palletColour()">
 
     <div class="container-fluid">
         <br><br>
@@ -128,20 +133,20 @@
             <div class="panel panel-primary name1">
 
                 <div class="panel-heading">
-                    <b style="font-size:18px;">STUDENT INFORMATION</b>
+                    <b style="font-size: 18px;">STUDENT INFORMATION</b>
                 </div>
 
                 <div class="panel-body">
-                    <p name="userName" style="font-size:16px;">
+                    <p name="userName" style="font-size: 16px;">
                         <b>Student Name:</b> {{profile_name}}
                     </p>
-                    <p name="emailId" style="font-size:16px;">
+                    <p name="emailId" style="font-size: 16px;">
                         <b>Student Email:</b> {{email_id}}
                     </p>
-                    <p name="branch" style="font-size:16px;">
+                    <p name="branch" style="font-size: 16px;">
                         <b>Subject:</b> Miscellaneous
                     </p>
-                    <p name="branch" style="font-size:16px;">
+                    <p name="branch" style="font-size: 16px;">
                         <b>Question Type:</b> {{question_type}}
                     </p>
                     <p name="branch" style="font-size:16px;">
@@ -159,41 +164,71 @@
                 <br><br>
 
                 <div class="quespart col-sm-9">
-                    <div class="panel-group" style="margin-top:5px;">
+                    <div class="panel-group" style="margin-top: 5px;">
                         <div class="panel panel-primary">
 
-
                             <div class="panel-heading">
-
-                                <b style="font-size:18px;">Question {{question_no}}.</b>
-
+                                <b style="font-size: 18px;">
+                                    Question {{question_no}}.
+                                </b>
                             </div>
 
                             <div class="panel-body">
-                                <p style="margin-top:10px;font-size:18px;padding:7px">{{question}} </p>
+                                <p style="margin-top: 10px; font-size: 18px; padding: 7px">
+                                    {{question}}
+                                </p>
 
                                 <div class="radio">
-                                    <label><p style="font-size:15px">&nbsp;&nbsp;<input type="radio" name="optradio" id="optradioa" required> {{option_a}} </p></label>
+                                    <label><p style="font-size: 15px">
+                                        &nbsp;&nbsp;
+                                        <input type="radio" name="optradio" id="optradioa" required>
+                                        {{option_a}}
+                                    </p></label>
                                 </div>
 
                                 <div class="radio">
-                                    <label><p style="font-size:15px">&nbsp;&nbsp;<input type="radio" name="optradio" id="optradiob">{{option_b}}</p></label>
+                                    <label><p style="font-size: 15px">
+                                        &nbsp;&nbsp;
+                                        <input type="radio" name="optradio" id="optradiob">
+                                        {{option_b}}
+                                    </p></label>
                                 </div>
 
                                 <div class="radio">
-                                    <label><p style="font-size:15px">&nbsp;&nbsp;<input type="radio" name="optradio" id="optradioc">{{option_c}} </p></label>
+                                    <label><p style="font-size: 15px">
+                                        &nbsp;&nbsp;
+                                        <input type="radio" name="optradio" id="optradioc">
+                                        {{option_c}}
+                                    </p></label>
                                 </div>
 
                                 <div class="radio">
-                                    <label><p style="font-size:15px">&nbsp;&nbsp;<input type="radio" name="optradio" id="optradiod">{{option_d}}</p></label>
+                                    <label><p style="font-size: 15px">
+                                        &nbsp;&nbsp;
+                                        <input type="radio" name="optradio" id="optradiod">
+                                        {{option_d}}
+                                    </p></label>
                                 </div>
 
-                                <button type="reset" class="btn btn-info" style="margin-top:170px;" onclick="return quizOptions()">Clear Response</button>
+                                <button type="reset" class="btn btn-info"
+                                                style="margin-top: 170px;"
+                                                onclick="return clearResponse()">
+                                    Clear Response
+                                </button>
+
                                 <form action="/demo_quiz" method="post" name="tokenForm">
                                     <input type="hidden" id="idToken" name="idToken">
+                                    <input type="hidden" id="answerTicked" name="answerTicked">
 
                                 </form>
-                                <button type="submit" class="btn btn-default" onclick="submitButton()" style="margin-top:170px; background-color:rgba(255,0,0,0.61); color:#FFF; float:right">Save & Next </button></a>
+
+                                <button type="submit" class="btn btn-default"
+                                                onclick="submitButton()"
+                                                style="margin-top: 170px;
+                                                    background-color:rgba(255,0,0,0.61);
+                                                    color:#FFF; float:right">
+                                    Save & Next
+                                </button>
 
                             </div>
                         </div>
@@ -204,36 +239,108 @@
                 <div class="timer col-sm-3">
                     <div class="col-sm-12">
                         <div class="col-sm-6">
-                            <img src="{{picture}}"  class="userim img-responsive"/>
+                            <img src="{{picture}}" class="userim img-responsive">
                         </div>
 
                         <div class="col-sm-6">
-                            <p style="margin-top:30px;"><b>TIME LEFT:</b></p>
-                            <b><p id="demo"></p></b>
+                            <p style="margin-top: 30px;"><b>TIME LEFT:</b></p>
+                            <b><p id="timer"></p></b>
+
+                            <script>
+                                var timeoutHandle;
+                                var time_on_timer = "";
+                                var time_left_in_sec = 0;
+
+                                function countdown(minutes)
+                                {
+                                    var seconds = 60;
+                                    var mins = minutes
+                                    function tick()
+                                    {
+                                        var counter = document.getElementById("timer");
+                                        var current_minutes = mins - 1
+                                        seconds--;
+                                        time_on_timer = current_minutes.toString() + ":"
+                                                    + (seconds < 10 ? "0" : "")
+                                                    + String(seconds);
+
+                                        time_left_in_sec = (current_minutes * 60) + seconds;
+                                        counter.innerHTML = time_on_timer;
+
+                                        if(seconds > 0)
+                                        {
+                                            timeoutHandle = setTimeout(tick, 1000);
+                                        }
+                                        else
+                                        {
+                                            if(time_left_in_sec == 0)
+                                            {
+                                                alert("Time over!")
+                                            }
+                                            if(mins > 1)
+                                            {
+                                                setTimeout
+                                                (
+                                                    function()
+                                                    {
+                                                        countdown(mins - 1);
+                                                    },
+                                                    1000
+                                                );
+                                            }
+                                        }
+                                    }
+                                    tick();
+                                }
+
+                                countdown('{{time_limit}}');
+                                </script>
                         </div>
                     </div>
 
 
-                    <div class="col-sm-12" style="margin-top:5px;">
+                    <div class="col-sm-12" style="margin-top: 5px;">
                         <br>
                         <p><b><center>Question Pallet</center></b></p>
-                        <div class="table-responsive" style="overflow:hidden;">
-                            <table class="table table-condensed no-border" style="margin-left:15px; margin-top:4px; margin-bottom:0px;">
+                        <div class="table-responsive" style="overflow: hidden;">
+                            <table class="table table-condensed no-border"
+                                    style="margin-left: 15px; margin-top: 4px; margin-bottom: 0px;">
                                 <tbody>
                                     <tr>
-                                        <td><button type="button" class="btn btn-danger btn-sm" name="flag" id="1" value="1">1</button></td>
-                                        <td><button type="button" class="btn btn-danger btn-sm" name="flag" id="2" value="2">2</button></td>
-                                        <td><button type="button" class="btn btn-danger btn-sm" name="flag" id="3" value="3">3</button></td>
-                                        <td><button type="button" class="btn btn-danger btn-sm" name="flag" id="4" value="4">4</button></td>
-                                        <td><button type="button" class="btn btn-danger btn-sm" name="flag" id="5" value="5">5</button></td>
-                                        <td><button type="button" class="btn btn-danger btn-sm" name="flag" id="6" value="6">6</button></td>
-                                        <td><button type="button" class="btn btn-danger btn-sm" name="flag" id="7" value="7">7</button></td>
-                                        <td><button type="button" class="btn btn-danger btn-sm" name="flag" id="8" value="8">8</button></td>
+                                        <td>
+                                            <button class="btn btn-basic btn-sm" id="1">1</button>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-basic btn-sm" id="2">2</button>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-basic btn-sm" id="3">3</button>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-basic btn-sm" id="4">4</button>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-basic btn-sm" id="5">5</button>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-basic btn-sm" id="6">6</button>
+                                        </td>
                                     </tr>
 
+
                                     <tr>
-                                        <td><button type="button" class="btn btn-danger btn-sm" name="flag" id="9" value="9">9</button></td>
-                                        <td><button type="button" class="btn btn-danger btn-sm" name="flag" id="10" value="10">10</button></td>
+                                        <td>
+                                            <button class="btn btn-basic btn-sm" id="7">7</button>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-basic btn-sm" id="8">8</button>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-basic btn-sm" id="9">9</button>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-basic btn-sm" id="10">10</button>
+                                        </td>
                                     </tr>
 
                                 </tbody>
@@ -241,37 +348,21 @@
                         </div>
                     </div>
 
-                    <div class="col-sm-12" style="margin-top:1px;"><hr>
-                        <p><button class="btn btn-success" ></button> &nbsp;You have answered the question.</p><br>
-                        <p><button class="btn btn-basic"></button> &nbsp;You have <b> not </b>answered the question.</p>
-                    </div>
-                    <br>
+                    <div class="col-sm-12" style="margin-left: 15px; margin-top: 1px;"><hr><br>
+                        <p>
+                            <button class="btn btn-success" ></button>
+                            &nbsp;You have answered the question.
+                        </p><br>
+
+                        <p>
+                            <button class="btn btn-basic"></button>
+                            &nbsp;You have <b> not </b>answered the question.
+                        </p>
+                    </div><br>
                 </div>
             </form>
         </div>
     </div>
-
-    <script>
-        var countDownDate = new Date("Feb 30, 2019 15:37:25").getTime();
-        var x = setInterval
-        (
-            function()
-            {
-                var now = new Date().getTime();
-                var distance = countDownDate - now;
-                var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-                document.getElementById("demo").innerHTML = minutes + "m " + seconds + "s ";
-
-                if (distance < 0)
-                {
-                    clearInterval(x);
-                    document.getElementById("demo").innerHTML = "EXPIRED";
-                }
-            },
-            1000
-        );
-    </script>
 
 </body>
 </html>

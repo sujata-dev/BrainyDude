@@ -232,10 +232,16 @@
             window.history.back();
         }
 
-        function submitForm()
+        function submitDemoForm()
         {
-            document.getElementById("idToken").value = '{{id_token}}';
-            document.tokenForm.submit();
+            //document.getElementById("idToken").value = '{{id_token}}';
+            document.getElementById("tokenDemoForm").submit();
+        }
+
+        function submitSportsForm()
+        {
+            //document.tokenSportsForm.submit();
+            document.getElementById("tokenSportsForm").submit();
         }
     </script>
 </head>
@@ -314,33 +320,48 @@
         <div class="quiz_pref_row">
             <div class="quiz_pref_column">
                 <div class="quiz_pref_card">
-                    <img class="quiz_pref_img" src="/static/tech.png">
+
+
+                        <img class="quiz_pref_img" src="/static/tech.png">
+
+
                 </div>
             </div>
 
             <div class="quiz_pref_column">
                 <div class="quiz_pref_card">
-                    <img class="quiz_pref_img" src="/static/gk.png">
+
+
+                        <img class="quiz_pref_img" src="/static/gk.png">
+
+
                 </div>
             </div>
 
             <div class="quiz_pref_column">
                 <div class="quiz_pref_card">
-                    <img class="quiz_pref_img" src="/static/sports.png">
+                    <form action="/quiz_rules" method="post" name="tokenSportsForm" id="tokenSportsForm">
+                        <input type="hidden" id="idToken" name="idToken" value="{{id_token}}">
+                        <input type="hidden" id="topic" name="topic" value="sports">
+
+                        <a href=# onclick="submitSportsForm()">
+                            <img class="quiz_pref_img" src="/static/sports.png">
+                            </a>
+                    </form>
                 </div>
             </div>
         </div>
 
     <br><br>
     <center><b>
-        <form action="/quiz_rules" method="post" name="tokenForm">
-            <input type="hidden" id="idToken" name="idToken">
-        </form>
-        <a href=# onclick="submitForm()">
-            <button class="demo_quiz_link">
-            Need to practice? Take a demo quiz ⟶
+        <form action="/quiz_rules" method="post" name="tokenDemoForm" id="tokenDemoForm">
+            <input type="hidden" id="idToken" name="idToken" value="{{id_token}}">
+            <input type="hidden" id="topic" name="topic" value="demo">
+
+            <button class="demo_quiz_link" onclick="submitDemoForm()">
+                Need to practice? Take a demo quiz ⟶
             </button>
-        </a>
+        </form>
     </b></center>
     </div>
 </body>

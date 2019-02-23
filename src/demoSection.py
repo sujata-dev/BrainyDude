@@ -6,20 +6,16 @@ DEMO_SUBJECTIVE_FILE = "static/CSVs/demoQuizSubjective.csv"
 
 def demo_questions(QUESTION_NUMBER):
     question_item = {}
-    if QUESTION_NUMBER > 10:
+    if QUESTION_NUMBER == 10:
         with open(DEMO_SUBJECTIVE_FILE) as file:
             reader = csv.DictReader(file)
-            line_number_csv = QUESTION_NUMBER
-            while(line_number_csv > 1):
-                row = next(reader)
-                line_number_csv = line_number_csv - 1
 
             for line in reader:
                 question_item["Question"] = line["Question"]
-                question_item["Answer"] = line["Answer"]
+                question_item["Correct Answer"] = line["Answer"]
                 break
 
-    else:
+    elif QUESTION_NUMBER < 10:
         with open(DEMO_MCQS_FILE) as file:
             reader = csv.DictReader(file)
             line_number_csv = QUESTION_NUMBER

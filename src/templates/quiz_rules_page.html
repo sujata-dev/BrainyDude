@@ -52,6 +52,16 @@
             width: 30px;
             height: 30px;
         }
+        .btn-current
+        {
+            border: 1px solid #000;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            width: 30px;
+            height: 30px;
+            background-color: rgba(238,184,19,0.8);
+            color: #000000;
+        }
         .btn-basic
         {
             border: 1px solid #000;
@@ -98,15 +108,16 @@
     {
         //document.getElementById("idToken").value = '{{id_token}}';
         //document.getElementById("topic").value = '{{topic}}'
-        if('{{topic}}' == "demo")
+
+        if('{{topic}}' == "Miscellaneous")
         {
             document.getElementById("tokenForm").action = "/demo_quiz";
         }
-        if('{{topic}}' == "sports")
+        else if('{{topic}}' == "Sports" || '{{topic}}' == "GK" || '{{topic}}' == "Technology")
         {
-            document.getElementById("tokenForm").action = "/sports_quiz";
+            document.getElementById("tokenForm").action = "/main_quiz";
         }
-        document.tokenForm.submit();
+        document.getElementById("tokenForm").submit();
     }
 </script>
 </head>
@@ -115,7 +126,7 @@
 <body>
     <div class="container-fluid" style="width: 100%;">
         <div class="panel-group">
-            <br><br><br>
+            <br>
             <div class="panel panel-primary name1">
                 <div class="panel-heading">
                     <b><center style="font-size: 20px;">
@@ -135,32 +146,48 @@
                         This is an <b>adaptive test</b> i.e. the difficulty of each question is based on the person's ability to give the correct answers.
                     </p></li>
                     <li><p style="font-size: 15px;">
-                        Time duration of the test is <b>20 minutes.</b>
-                    </p></li>
-                    <li><p style="font-size: 15px;">
-                        There are a total of <b>10 questions.</b>
-                    </p></li>
-                    <li><p style="font-size: 15px;">
-                        There is <b>no negative marking.</b>
-                    </p></li>
-                    <li><p style="font-size: 15px;">
-                        Each question has to be answered compulsorily.
+                        There are a total of <b>10 questions</b>, with <b>no</b> negative marking.
                     </p></li>
                     <li><p style="font-size: 15px;">
                         There are <b>9 multiple choice type questions (MCQs)</b> with 4 alternative answers.
                     </p></li>
                     <li><p style="font-size: 15px;">
-                        The quiz ends with a <b> subjective type</b> question which has to be answered within <b>50 words</b>.
+                        The score of each MCQ question is dependent on the difficulty level:<br>
+                        <b>Easy: </b>2 marks<br>
+                        <b>Medium: </b>3 marks<br>
+                        <b>Hard: </b>5 marks<br>
+                    </p></li>
+                     <li><p style="font-size: 15px;">
+                        The time duration of <b>Easy</b>, <b>Medium</b> and <b>Hard</b> MCQ questions are <b>2</b>, <b>3</b> and <b>5 minutes</b> respectively.<br>
+                    </p></li>
+                    <li><p style="font-size: 15px;">
+                        The last question is a <b> subjective type</b> question which has to be answered within <b>50 words</b> (Time Duration: <b>20 minutes</b>).
+                    </p></li>
+
+                    <li><p style="font-size: 15px;">
+                        The subjective section will be scored on its accuracy (out of <b>10 marks</b>).
+                    </p></li>
+                    <li><p style="font-size: 15px;">
+                        To save your answer and move on to the next question, click on <b>Save & Next</b> button.
+                    </p></li>
+                    <li><p style="font-size: 15px;">
+                        To deselect your answer, click on the <b>Clear Response</b> button.
                     </p></li>
                     <li>
                         <p style="font-size: 15px;">
-                        The question palette is displayed on the right side of the screen which shows the status of each question using one of the following symbols:
+                        The question palette is displayed on the right side of the screen which shows the status of each question:
                         </p><br>
 
                         <p style="font-size: 15px;">
                             <button class="btn btn-success" ></button>
                             &nbsp;You have answered the question.
                         </p>
+
+                        <p style="font-size: 15px;">
+                            <button class="btn btn-current" ></button>
+                            &nbsp;You are currently attempting the question.
+                        </p>
+
                         <p style="font-size: 15px;">
                             <button class="btn btn-basic"></button>
                             &nbsp;You have <b> not </b>answered the question.
@@ -168,16 +195,10 @@
                     </li><br>
 
                     <li><p style="font-size: 15px;">
-                        To select your answer, select one of the 4 options.
+                        You cannot go back once the test is started. If you do, all your responses would be lost.
                     </p></li>
                     <li><p style="font-size: 15px;">
-                        To deselect your answer, click on the <b>Clear Response</b> button.
-                    </p></li>
-                    <li><p style="font-size: 15px;">
-                        To save your answer, click on <b>Save & Next</b> button.
-                    </p></li>
-                    <li><p style="font-size: 15px;">
-                        You will be able to view your result once the test is over.
+                        You will be able to view your total score once the test is over.
                     </p></li><br>
                 </ol>
             </div>
@@ -199,13 +220,13 @@
 
     <div id="dpbutton" style="display: none">
         <br>
-        <form method="post" name="tokenForm" id="tokenForm">
+        <form action="#" method="post" name="tokenForm" id="tokenForm">
             <input type="hidden" id="idToken" name="idToken" value="{{id_token}}">
             <input type="hidden" id="topic" name="topic" value="{{topic}}">
         </form>
 
         <center>
-            <a href=# onclick="submitForm()">
+            <a href="javascript:;" onclick="submitForm()">
             <button style="font-size: 18px; color:white;" class="btn btn-primary">
                 <b>Start Test</b>
             </button>

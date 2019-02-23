@@ -50,6 +50,16 @@
             height: 32px;
             color: #000000;
         }
+        .btn-current
+        {
+            border: 1px solid #000;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            width: 32px;
+            height: 32px;
+            background-color: rgba(238,184,19,0.8);
+            color: #000000;
+        }
         .btn-basic
         {
             border: 1px solid #000;
@@ -82,22 +92,34 @@
             id = i.toString();
             document.getElementById(id).className = 'btn btn-success btn-sm';
         }
+        document.getElementById(question_no.toString()).className = 'btn btn-current btn-sm';
     }
     function clearResponse()
     {
-        document.getElementById('subjectiveAns').value = "";
+        document.getElementById("subjectiveAns").value = "";
         return false;
     }
 
-    function submitButton()
+    function submitForm()
     {
-
         total_time = '{{time_limit}}';
         time_taken_in_sec = (total_time * 60) - time_left_in_sec;
 
-        var text = document.getElementsById('subjectiveAns').value;
-        document.getElementById("idToken").value = '{{id_token}}';
-        console.log(text);
+        var text = document.getElementById("subjectiveAns").value;
+        document.getElementById("answerTicked").value = text;
+
+        document.getElementById("timeTaken").value = time_taken_in_sec;
+
+        if('{{topic}}' == "Miscellaneous")
+        {
+            document.getElementById("tokenForm").action = "/demo_quiz";
+        }
+        else if('{{topic}}' == "Sports" || '{{topic}}' == "GK" || '{{topic}}' == "Technology")
+        {
+            document.getElementById("tokenForm").action = "/main_quiz";
+        }
+
+        document.getElementById("tokenForm").submit();
     }
 
     window.onpopstate = function()
@@ -127,7 +149,7 @@
                         <b>Student Email:</b> {{email_id}}
                     </p>
                     <p name="branch" style="font-size: 16px;">
-                        <b>Subject:</b> Miscellaneous
+                        <b>Subject:</b> {{topic}}
                     </p>
                     <p name="branch" style="font-size: 16px;">
                         <b>Question Type:</b> {{question_type}}
@@ -143,7 +165,7 @@
 
     <div class="container-fluid">
         <div class="row">
-            <form action="#" method="post">
+            <form method="post">
                 <br><br>
 
                 <div class="quespart col-sm-9">
@@ -161,7 +183,6 @@
                                     {{question}}
                                 </p>
 
-
                                 <div>
                                     <br><br>
                                     <textarea class="form-control" id="subjectiveAns" rows="5" placeholder="Type Your Answer Here" required></textarea>
@@ -173,19 +194,19 @@
                                     Clear Response
                                 </button>
 
-                                <form action="/demo_quiz" method="post" name="tokenForm">
-                                    <input type="hidden" id="idToken" name="idToken">
+                                <form method="post" name="tokenForm">
+                                    <input type="hidden" id="idToken" name="idToken" value="{{id_token}}">
+                                    <input type="hidden" id="topic" name="topic" value="{{topic}}">
+                                    <input type="hidden" id="timeTaken" name="timeTaken">
+                                    <input type="hidden" id="answerTicked" name="answerTicked">
 
+
+                                    <a href="javascript:;" onclick="submitForm()">
+                                        <button type="submit" class="btn btn-default" style="margin-top: 170px; background-color:rgba(255,0,0,0.61); color:#FFF; float:right">
+                                            Save & Next
+                                        </button>
+                                    </a>
                                 </form>
-
-                                <button type="submit" class="btn btn-default"
-                                                onclick="submitButton()"
-                                                style="margin-top: 170px;
-                                                    background-color:rgba(255,0,0,0.61);
-                                                    color:#FFF; float:right">
-                                    Save & Next
-                                </button>
-
                             </div>
                         </div>
                     </div>
@@ -308,6 +329,11 @@
                         <p>
                             <button class="btn btn-success" ></button>
                             &nbsp;You have answered the question.
+                        </p><br>
+
+                        <p>
+                            <button class="btn btn-current" ></button>
+                            &nbsp;You are currently attempting the question.
                         </p><br>
 
                         <p>

@@ -3,13 +3,36 @@ import random
 
 SPORTS_MCQS_FILE = "static/CSVs/sportsMCQs.csv"
 SPORTS_SUBJECTIVE_FILE = "static/CSVs/sportsSubjective.csv"
+
+GK_MCQS_FILE = "static/CSVs/gkMCQs.csv"
+GK_SUBJECTIVE_FILE = "static/CSVs/gkSubjective.csv"
+
+TECH_MCQS_FILE = "static/CSVs/techMCQs.csv"
+TECH_SUBJECTIVE_FILE = ""
+
+
+MCQS_FILE = ""
+SUBJECTIVE_FILE = ""
+
 quizdata = []
 
 
-def sports_questions(QUESTION_NUMBER, DIFFICULTY_LEVEL):
+def sports_questions(topic, QUESTION_NUMBER, DIFFICULTY_LEVEL):
     question_item = {}
+    if topic == "Sports":
+        MCQS_FILE = SPORTS_MCQS_FILE
+        SUBJECTIVE_FILE = SPORTS_SUBJECTIVE_FILE
+
+    elif topic == "GK":
+        MCQS_FILE = GK_MCQS_FILE
+        SUBJECTIVE_FILE = GK_SUBJECTIVE_FILE
+
+    elif topic == "Technology":
+        MCQS_FILE = TECH_MCQS_FILE
+        SUBJECTIVE_FILE = GK_SUBJECTIVE_FILE
+
     if QUESTION_NUMBER > 10:
-        with open(SPORTS_SUBJECTIVE_FILE) as file:
+        with open(SUBJECTIVE_FILE) as file:
             reader = csv.DictReader(file)
 
             for line in reader:
@@ -21,11 +44,10 @@ def sports_questions(QUESTION_NUMBER, DIFFICULTY_LEVEL):
                 question_item["Question"] = selected_question["Question"]
                 question_item["Answer"] = selected_question["Answer"]
 
-                quizdata.clear()
                 break
 
     else:
-        with open(SPORTS_MCQS_FILE) as file:
+        with open(MCQS_FILE) as file:
             reader = csv.DictReader(file)
 
             for line in reader:
@@ -58,8 +80,7 @@ def sports_questions(QUESTION_NUMBER, DIFFICULTY_LEVEL):
                     question_item["Correct Answer"] = question_item["Option " +
                                                                     selected_question["Correct Answer"]]
                     question_item["Description"] = line["Description"]
-
-                    quizdata.clear()
                     break
 
+        quizdata.clear()
     return question_item

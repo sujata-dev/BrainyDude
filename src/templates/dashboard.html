@@ -243,6 +243,16 @@
             //document.tokenSportsForm.submit();
             document.getElementById("tokenSportsForm").submit();
         }
+
+        function submitGKForm()
+        {
+            document.getElementById("tokenGKForm").submit();
+        }
+
+        function submitTechForm()
+        {
+            document.getElementById("tokenTechForm").submit();
+        }
     </script>
 </head>
 
@@ -320,21 +330,29 @@
         <div class="quiz_pref_row">
             <div class="quiz_pref_column">
                 <div class="quiz_pref_card">
+                    <form action="/quiz_rules" method="post" name="tokenTechForm" id="tokenTechForm">
+                        <input type="hidden" id="idToken" name="idToken" value="{{id_token}}">
+                        <input type="hidden" id="topic" name="topic" value="Technology">
 
+                        <a href="javascript:;" onclick="submitTechForm()">
 
-                        <img class="quiz_pref_img" src="/static/tech.png">
-
+                            <img class="quiz_pref_img" src="/static/tech.png">
+                        </a>
+                    </form>
 
                 </div>
             </div>
 
             <div class="quiz_pref_column">
                 <div class="quiz_pref_card">
+                    <form action="/quiz_rules" method="post" name="tokenGKForm" id="tokenGKForm">
+                        <input type="hidden" id="idToken" name="idToken" value="{{id_token}}">
+                        <input type="hidden" id="topic" name="topic" value="GK">
 
-
-                        <img class="quiz_pref_img" src="/static/gk.png">
-
-
+                        <a href="javascript:;" onclick="submitGKForm()">
+                            <img class="quiz_pref_img" src="/static/gk.png">
+                        </a>
+                    </form>
                 </div>
             </div>
 
@@ -342,11 +360,11 @@
                 <div class="quiz_pref_card">
                     <form action="/quiz_rules" method="post" name="tokenSportsForm" id="tokenSportsForm">
                         <input type="hidden" id="idToken" name="idToken" value="{{id_token}}">
-                        <input type="hidden" id="topic" name="topic" value="sports">
+                        <input type="hidden" id="topic" name="topic" value="Sports">
 
-                        <a href=# onclick="submitSportsForm()">
+                        <a href="javascript:;" onclick="submitSportsForm()">
                             <img class="quiz_pref_img" src="/static/sports.png">
-                            </a>
+                        </a>
                     </form>
                 </div>
             </div>
@@ -356,7 +374,7 @@
     <center><b>
         <form action="/quiz_rules" method="post" name="tokenDemoForm" id="tokenDemoForm">
             <input type="hidden" id="idToken" name="idToken" value="{{id_token}}">
-            <input type="hidden" id="topic" name="topic" value="demo">
+            <input type="hidden" id="topic" name="topic" value="Miscellaneous">
 
             <button class="demo_quiz_link" onclick="submitDemoForm()">
                 Need to practice? Take a demo quiz ⟶

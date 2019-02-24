@@ -12,121 +12,44 @@
     <script src="https://apis.google.com/js/platform.js" async defer></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
 
-    <style>
-        body
-        {
-            font-family: "Lato", sans-serif;
-        }
-        .quespart
-        {
-            height: auto;
-            margin-left: 0px;
-            border-radius: 5px;
-        }
-        .name1
-        {
-            margin-top: 8px;
-            height: auto;
-            width: 100%;
-        }
-        .timer
-        {
-            margin-left: 0px;
-            border-radius: 5px;
-        }
-        .userim
-        {
-            border: 1px solid #000;
-            width: 100px;
-            height: 100px;
-            margin-top: 5px;
-        }
-        .btn-success
-        {
-            border: 1px solid #000;
-            border-bottom-left-radius: 20px;
-            border-bottom-right-radius: 20px;
-            width: 32px;
-            height: 32px;
-            color: #000000;
-        }
-        .btn-current
-        {
-            border: 1px solid #000;
-            border-bottom-left-radius: 20px;
-            border-bottom-right-radius: 20px;
-            width: 32px;
-            height: 32px;
-            background-color: rgba(238,184,19,0.8);
-            color: #000000;
-        }
-        .btn-basic
-        {
-            border: 1px solid #000;
-            border-bottom-left-radius: 20px;
-            border-bottom-right-radius: 20px;
-            width: 32px;
-            height: 32px;
-            background-color: rgba(204,0,0,0.8);
-            color: #ffffff;
-        }
-        .table.no-border tr td, .table.no-border tr
-        {
-            border-width: 0;
-        }
-        .ready
-        {
-            margin-top: 120px;
-            width: 100%;
-            height: 1px;
-            background-color: rgba(0,0,0,0.51);
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="./static/css/subjective_quiz_page_style.css"/>
 
-<script>
-    function palletColour()
-    {
-        question_no = '{{question_no}}';
-        for(var i = 1; i < question_no; i++)
+    <script>
+        function palletColour()
         {
-            id = i.toString();
-            document.getElementById(id).className = 'btn btn-success btn-sm';
+            question_no = '{{question_no}}';
+            for(var i = 1; i < question_no; i++)
+            {
+                id = i.toString();
+                document.getElementById(id).className = 'btn btn-success btn-sm';
+            }
+            document.getElementById(question_no.toString()).className = 'btn btn-current btn-sm';
         }
-        document.getElementById(question_no.toString()).className = 'btn btn-current btn-sm';
-    }
-    function clearResponse()
-    {
-        document.getElementById("subjectiveAns").value = "";
-        return false;
-    }
-
-    function submitForm()
-    {
-        total_time = '{{time_limit}}';
-        time_taken_in_sec = (total_time * 60) - time_left_in_sec;
-
-        var text = document.getElementById("subjectiveAns").value;
-        document.getElementById("answerTicked").value = text;
-
-        document.getElementById("timeTaken").value = time_taken_in_sec;
-
-        if('{{topic}}' == "Miscellaneous")
+        function clearResponse()
         {
-            document.getElementById("tokenForm").action = "/demo_quiz";
-        }
-        else if('{{topic}}' == "Sports" || '{{topic}}' == "GK" || '{{topic}}' == "Technology")
-        {
-            document.getElementById("tokenForm").action = "/main_quiz";
+            document.getElementById("subjectiveAns").value = "";
+            return false;
         }
 
-        document.getElementById("tokenForm").submit();
-    }
+        function submitForm()
+        {
+            total_time = '{{question_item.time_limit}}';
+            time_taken_in_sec = (total_time * 60) - time_left_in_sec;
 
-    window.onpopstate = function()
-    {
-        alert("Careful! If you go back, you will lose all your quiz responses.");
-    };
-    history.pushState({}, '');
+            var text = document.getElementById("subjectiveAns").value;
+            document.getElementById("answerTicked").value = text;
+
+            document.getElementById("timeTaken").value = time_taken_in_sec;
+
+            document.getElementById("tokenForm").action = "/result";
+            document.getElementById("tokenForm").submit();
+        }
+
+        window.onpopstate = function()
+        {
+            alert("Careful! If you go back, you will lose all your quiz responses.");
+        };
+        history.pushState({}, '');
     </script>
 </head>
 
@@ -143,19 +66,19 @@
 
                 <div class="panel-body">
                     <p name="userName" style="font-size: 16px;">
-                        <b>Student Name:</b> {{profile_name}}
+                        <b>Student Name:</b> {{id_info.name}}
                     </p>
                     <p name="emailId" style="font-size: 16px;">
-                        <b>Student Email:</b> {{email_id}}
+                        <b>Student Email:</b> {{id_info.email}}
                     </p>
                     <p name="branch" style="font-size: 16px;">
-                        <b>Subject:</b> {{topic}}
+                        <b>Subject:</b> {{question_item.topic}}
                     </p>
                     <p name="branch" style="font-size: 16px;">
-                        <b>Question Type:</b> {{question_type}}
+                        <b>Question Type:</b> {{question_item.question_type}}
                     </p>
                     <p name="branch" style="font-size:16px;">
-                        <b>Difficulty Level:</b> {{difficulty_level}}
+                        <b>Difficulty Level:</b> {{question_item.difficulty_level}}
                     </p>
                 </div>
             </div>
@@ -180,7 +103,7 @@
 
                             <div class="panel-body">
                                 <p style="margin-top: 10px; font-size: 18px; padding: 7px">
-                                    {{question}}
+                                    {{question_item.question}}
                                 </p>
 
                                 <div>
@@ -196,7 +119,7 @@
 
                                 <form method="post" name="tokenForm">
                                     <input type="hidden" id="idToken" name="idToken" value="{{id_token}}">
-                                    <input type="hidden" id="topic" name="topic" value="{{topic}}">
+                                    <input type="hidden" id="topic" name="topic" value="{{question_item.topic}}">
                                     <input type="hidden" id="timeTaken" name="timeTaken">
                                     <input type="hidden" id="answerTicked" name="answerTicked">
 
@@ -216,7 +139,7 @@
                 <div class="timer col-sm-3">
                     <div class="col-sm-12">
                         <div class="col-sm-6">
-                            <img src="{{picture}}" class="userim img-responsive">
+                            <img src="{{id_info.picture}}" class="userim img-responsive">
                         </div>
 
                         <div class="col-sm-6">
@@ -270,7 +193,7 @@
                                     tick();
                                 }
 
-                                countdown('{{time_limit}}');
+                                countdown('{{question_item.time_limit}}');
                                 </script>
                         </div>
                     </div>

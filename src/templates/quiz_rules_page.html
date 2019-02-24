@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Rules of the Quiz</title>
+    <title>Quiz Rules</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -13,117 +13,54 @@
     <script src="https://apis.google.com/js/platform.js" async defer></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
 
-    <style>
-        body
-        {
-            font-family: "Lato", sans-serif;
-        }
-        .rule
-        {
-            position: relative;
-            padding: 10px;
-            border-radius: 5px;
-            border: 2px solid blue;
-            width: 100%;
-            height: 100%;
-        }
-        .name1
-        {
-            margin-top: 8px;
-            height: auto;
-            width: 100%;
-        }
-        .timer
-        {
-            margin-left: 0px;
-            border-radius: 5px;
-        }
-        .userim
-        {
-            width: 100px;
-            height: 100px;
-            margin-top: 5px;
-        }
-        .btn-success
-        {
-            border: 1px solid #000;
-            border-bottom-left-radius: 20px;
-            border-bottom-right-radius: 20px;
-            width: 30px;
-            height: 30px;
-        }
-        .btn-current
-        {
-            border: 1px solid #000;
-            border-bottom-left-radius: 20px;
-            border-bottom-right-radius: 20px;
-            width: 30px;
-            height: 30px;
-            background-color: rgba(238,184,19,0.8);
-            color: #000000;
-        }
-        .btn-basic
-        {
-            border: 1px solid #000;
-            border-bottom-left-radius: 20px;
-            border-bottom-right-radius: 20px;
-            width: 30px;
-            height: 30px;
-            background-color: rgba(204,0,0,0.8);
-        }
-        .table.no-border tr td, .table.no-border tr
-        {
-            border-width: 0;
-        }
-        .ready
-        {
-            margin-top: 120px;
-            width: 100%;
-            height: 1px;
-            background-color: rgba(0,0,0,0.51);
-        }
-</style>
-<script>
-    $(
-        function()
-        {
-            $("#chkbutton").click
-            (
-                function()
-                {
-                    if($(this).is(":checked"))
+    <link rel="stylesheet" type="text/css" href="./static/css/quiz_rules_page_style.css"/>
+    <script>
+        $(
+            function()
+            {
+                $("#chkbutton").click
+                (
+                    function()
                     {
-                        $("#dpbutton").show();
+                        if($(this).is(":checked"))
+                        {
+                            $("#dpbutton").show();
+                        }
+                        else
+                        {
+                            $("#dpbutton").hide();
+                        }
                     }
-                    else
-                    {
-                        $("#dpbutton").hide();
-                    }
-                }
-            );
-        }
-    );
+                );
+            }
+        );
 
-    function submitForm()
-    {
-        //document.getElementById("idToken").value = '{{id_token}}';
-        //document.getElementById("topic").value = '{{topic}}'
+        function submitForm()
+        {
+            //document.getElementById("idToken").value = '{{id_token}}';
+            //document.getElementById("topic").value = '{{topic}}'
 
-        if('{{topic}}' == "Miscellaneous")
-        {
-            document.getElementById("tokenForm").action = "/demo_quiz";
+            document.getElementById("tokenForm").action = "/quiz";
+            document.getElementById("tokenForm").submit();
         }
-        else if('{{topic}}' == "Sports" || '{{topic}}' == "GK" || '{{topic}}' == "Technology")
+        function addTopicRule()
         {
-            document.getElementById("tokenForm").action = "/main_quiz";
+            var firstline;
+            if('{{topic}}' == "Miscellaneous")
+            {
+                firstline = 'This quiz is for demo purposes only. Practice well.'
+            }
+            else
+            {
+                firstline = 'This is the Main Quiz. Gear up and score well!'
+            }
+            document.getElementById("firstline").innerHTML = firstline;
         }
-        document.getElementById("tokenForm").submit();
-    }
-</script>
+    </script>
 </head>
 
 
-<body>
+<body onload="addTopicRule()">
     <div class="container-fluid" style="width: 100%;">
         <div class="panel-group">
             <br>
@@ -144,6 +81,8 @@
                 <ol type="1">
                     <li><p style="font-size: 15px;">
                         This is an <b>adaptive test</b> i.e. the difficulty of each question is based on the person's ability to give the correct answers.
+                    </p></li>
+                    <li><p style="font-size: 15px;" id="firstline">
                     </p></li>
                     <li><p style="font-size: 15px;">
                         There are a total of <b>10 questions</b>, with <b>no</b> negative marking.

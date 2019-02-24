@@ -4,199 +4,15 @@
     <title>BrainyDude Dashboard</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://apis.google.com/js/platform.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
-    <style>
-        body
-        {
-            font-family: "Lato", sans-serif;
-        }
+    <link rel="stylesheet" type="text/css" href="./static/css/dashboard_style.css"/>
 
-        /* for logo */
-        #logo
-        {
-            -webkit-filter: grayscale(0%) hue-rotate(180deg) contrast(200%);
-            filter:grayscale(0%) hue-rotate(180deg) contrast(200%);
-        }
 
-        .sidebar
-        {
-            height: 100%;
-            width: 0;
-            position: fixed;
-            z-index: 1;
-            top: 0;
-            left: 0;
-            background-color: #111;
-            overflow-x: hidden;
-            transition: 0.5s;
-            padding-top: 60px;
-        }
-
-        .sidebar a
-        {
-            padding: 8px 8px 8px 16px;
-            text-decoration: none;
-            font-size: 25px;
-            color: #818181;
-            display: block;
-            transition: 0.3s;
-        }
-
-        .sidebar a:hover
-        {
-            color: white;
-        }
-
-        .sidebar .closebtn
-        {
-            position: absolute;
-            top: 0;
-            right: 25px;
-            font-size: 36px;
-            margin-left: 50px;
-        }
-
-        .openbtn
-        {
-            font-size: 20px;
-            cursor: pointer;
-            background-color: #111;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-        }
-
-        .openbtn:hover
-        {
-            background-color: #444;
-        }
-
-        #main
-        {
-            transition: margin-left .5s;
-            padding: 16px;
-        }
-
-        .tablink
-        {
-            background-color: gray;
-            color: black;
-            float: left;
-            border: none;
-            outline: none;
-            cursor: pointer;
-            padding: 14px 16px;
-            font-size: 17px;
-            width: 33.33%;
-        }
-
-        .tablink:hover
-        {
-            background-color: #777;
-        }
-
-        .tabcontent
-        {
-            color: black;
-            display: none;
-            padding: 70px;
-            text-align: center;
-        }
-
-        #get_started
-        {
-            background-color: #ffd480;
-            height: 470px;
-        }
-        #our_team
-        {
-            background-color: #26734d;
-            height: 470px;
-        }
-        #contact_us
-        {
-            background-color: #6fdcdc;
-            height: 470px;
-        }
-
-        *
-        {
-            box-sizing: border-box;
-        }
-
-        .our_team_column
-        {
-            float: left;
-            width: 33.33%;
-            padding: 5px;
-        }
-
-        .our_team_row::after
-        {
-            content: "";
-            clear: both;
-            display: table;
-        }
-
-        .our_team_img
-        {
-            width: 50%;
-            max-width: 95%;
-            border: 3px solid black;
-            border-radius: 25px;
-        }
-
-        /* Float four columns side by side */
-        .quiz_pref_column
-        {
-            float: left;
-            width: 33.33%;
-            padding: 0 10px;
-        }
-
-        .quiz_pref_row
-        {
-            margin: 0 -5px;
-        }
-
-        /* Clear floats after the columns */
-        .quiz_pref_row:after
-        {
-            content: "";
-            display: table;
-            clear: both;
-        }
-
-        .quiz_pref_card
-        {
-            padding: 16px;
-            text-align: center;
-        }
-
-        .quiz_pref_img
-        {
-            width: 80%;
-            border-radius: 25px;
-        }
-
-        .demo_quiz_link
-        {
-            background-color: #003333;
-            color: white;
-            cursor: pointer;
-            padding: 18px;
-            width: 100%;
-            border: none;
-            text-align: center;
-            outline: none;
-            font-size: 25px;
-        }
-    </style>
     <script>
         function openNav()
         {
@@ -261,9 +77,9 @@
         <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
         <br><br>
         <center>
-            <a href="#"><img src="{{picture}}"></a><br>
-            <a href="#">Welcome, {{profile_name}}</a>
-            <a href="#">{{email_id}}</a><br><br><br>
+            <a href="#"><img src="{{id_info.picture}}"></a><br>
+            <a href="#">Welcome, {{id_info.name}}</a>
+            <a href="#">{{id_info.email}}</a><br><br><br>
             <a href="#" onclick="signOut()">Sign Out</a>
         </center>
     </div>
@@ -274,7 +90,7 @@
 
         <div id="get_started" class="tabcontent">
             <h1>Become a</h1>
-            <img id="logo" src="/static/brainydude_logo.png"/>
+            <img id="logo" src="/static/images/brainydude_logo.png"/>
             <p style="font-size: 20px;">A platform where the users can take
                 online adaptive tests in any field.</p>
             <b>
@@ -286,15 +102,15 @@
         <div id="our_team" class="tabcontent">
             <div class="our_team_row">
                 <div class="our_team_column">
-                    <img src="/static/sujata.jpg" class="our_team_img"><br><br>
+                    <img src="/static/images/team_member_sujata.jpg" class="our_team_img"><br><br>
                     <b><p style="font-size: 25px;"> Sujata Dev </p></b>
                 </div>
                 <div class="our_team_column">
-                    <img src="/static/tanima.jpg" class="our_team_img"><br><br>
+                    <img src="/static/images/team_member_tanima.jpg" class="our_team_img"><br><br>
                     <b><p style="font-size: 25px;"> Tanima Tiwari </p></b>
                 </div>
                 <div class="our_team_column">
-                    <img src="/static/tanusha.jpg" class="our_team_img"><br><br>
+                    <img src="/static/images/team_member_tanusha.jpg" class="our_team_img"><br><br>
                     <b><p style="font-size: 25px;"> Tanusha Jain </p></b>
                 </div>
             </div>
@@ -336,7 +152,7 @@
 
                         <a href="javascript:;" onclick="submitTechForm()">
 
-                            <img class="quiz_pref_img" src="/static/tech.png">
+                            <img class="quiz_pref_img" src="/static/images/preference_technology.png">
                         </a>
                     </form>
 
@@ -350,7 +166,7 @@
                         <input type="hidden" id="topic" name="topic" value="GK">
 
                         <a href="javascript:;" onclick="submitGKForm()">
-                            <img class="quiz_pref_img" src="/static/gk.png">
+                            <img class="quiz_pref_img" src="/static/images/preference_gk.png">
                         </a>
                     </form>
                 </div>
@@ -363,7 +179,7 @@
                         <input type="hidden" id="topic" name="topic" value="Sports">
 
                         <a href="javascript:;" onclick="submitSportsForm()">
-                            <img class="quiz_pref_img" src="/static/sports.png">
+                            <img class="quiz_pref_img" src="/static/images/preference_sports.png">
                         </a>
                     </form>
                 </div>

@@ -12,141 +12,63 @@
     <script src="https://apis.google.com/js/platform.js" async defer></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
 
-    <style>
-        body
-        {
-            font-family: "Lato", sans-serif;
-        }
-        .quespart
-        {
-            height: auto;
-            margin-left: 0px;
-            border-radius: 5px;
-        }
-        .name1
-        {
-            margin-top: 8px;
-            height: auto;
-            width: 100%;
-        }
-        .timer
-        {
-            margin-left: 0px;
-            border-radius: 5px;
-        }
-        .userim
-        {
-            border: 1px solid #000;
-            width: 100px;
-            height: 100px;
-            margin-top: 5px;
-        }
-        .btn-success
-        {
-            border: 1px solid #000;
-            border-bottom-left-radius: 20px;
-            border-bottom-right-radius: 20px;
-            width: 32px;
-            height: 32px;
-            color: #000000;
-        }
-        .btn-current
-        {
-            border: 1px solid #000;
-            border-bottom-left-radius: 20px;
-            border-bottom-right-radius: 20px;
-            width: 32px;
-            height: 32px;
-            background-color: rgba(238,184,19,0.8);
-            color: #000000;
-        }
-        .btn-basic
-        {
-            border: 1px solid #000;
-            border-bottom-left-radius: 20px;
-            border-bottom-right-radius: 20px;
-            width: 32px;
-            height: 32px;
-            background-color: rgba(204,0,0,0.8);
-            color: #ffffff;
-        }
-        .table.no-border tr td, .table.no-border tr
-        {
-            border-width: 0;
-        }
-        .ready
-        {
-            margin-top: 120px;
-            width: 100%;
-            height: 1px;
-            background-color: rgba(0,0,0,0.51);
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="./static/css/mcq_quiz_page_style.css"/>
 
-<script>
-    function palletColour()
-    {
-        question_no = '{{question_no}}';
-        for(var i = 1; i < question_no; i++)
+    <script>
+        function palletColour()
         {
-            id = i.toString();
-            document.getElementById(id).className = 'btn btn-success btn-sm';
-        }
-
-        document.getElementById(question_no.toString()).className = 'btn btn-current btn-sm';
-    }
-    function clearResponse()
-    {
-        document.getElementById("optradioa").checked = false;
-        document.getElementById("optradiob").checked = false;
-        document.getElementById("optradioc").checked = false;
-        document.getElementById("optradiod").checked = false;
-        return false;
-    }
-
-    function submitForm()
-    {
-        document.getElementById("optradioa").value = '{{option_a}}';
-        document.getElementById("optradiob").value = '{{option_b}}';
-        document.getElementById("optradioc").value = '{{option_c}}';
-        document.getElementById("optradiod").value = '{{option_d}}';
-
-        total_time = '{{time_limit}}';
-        time_taken_in_sec = (total_time * 60) - time_left_in_sec;
-
-        var options = document.getElementsByName('optradio');
-
-        var answerTicked;
-        for(var i = 0; i < options.length; i++)
-        {
-            if(options[i].checked)
+            question_no = '{{question_no}}';
+            for(var i = 1; i < question_no; i++)
             {
-                answerTicked = options[i].value;
+                id = i.toString();
+                document.getElementById(id).className = 'btn btn-success btn-sm';
             }
+
+            document.getElementById(question_no.toString()).className = 'btn btn-current btn-sm';
         }
-
-        document.getElementById("answerTicked").value = answerTicked;
-        document.getElementById("timeTaken").value = time_taken_in_sec;
-
-
-        if('{{topic}}' == "Miscellaneous")
+        function clearResponse()
         {
-            document.getElementById("tokenForm").action = "/demo_quiz";
+            document.getElementById("optradioa").checked = false;
+            document.getElementById("optradiob").checked = false;
+            document.getElementById("optradioc").checked = false;
+            document.getElementById("optradiod").checked = false;
+            return false;
         }
-        else if('{{topic}}' == "Sports" || '{{topic}}' == "GK" || '{{topic}}' == "Technology")
+
+        function submitForm()
         {
-            document.getElementById("tokenForm").action = "/main_quiz";
+            document.getElementById("optradioa").value = '{{question_item.option_a}}';
+            document.getElementById("optradiob").value = '{{question_item.option_b}}';
+            document.getElementById("optradioc").value = '{{question_item.option_c}}';
+            document.getElementById("optradiod").value = '{{question_item.option_d}}';
+
+            total_time = '{{question_item.time_limit}}';
+            time_taken_in_sec = (total_time * 60) - time_left_in_sec;
+
+            var options = document.getElementsByName('optradio');
+
+            var answerTicked;
+            for(var i = 0; i < options.length; i++)
+            {
+                if(options[i].checked)
+                {
+                    answerTicked = options[i].value;
+                }
+            }
+
+            document.getElementById("answerTicked").value = answerTicked;
+            document.getElementById("timeTaken").value = time_taken_in_sec;
+
+            document.getElementById("tokenForm").action = "/quiz";
+            document.getElementById("tokenForm").submit();
+
         }
 
-        document.getElementById("tokenForm").submit();
-
-    }
-
-    window.onpopstate = function()
-    {
-        alert("Careful! If you go back, you will lose all your quiz responses.");
-    };
-    history.pushState({}, '');
+        window.onpopstate = function()
+        {
+            alert("Careful! If you go back, you will lose all your quiz responses.");
+        };
+        history.pushState({}, '');
     </script>
 </head>
 
@@ -163,19 +85,19 @@
 
                 <div class="panel-body">
                     <p name="userName" style="font-size: 16px;">
-                        <b>Student Name:</b> {{profile_name}}
+                        <b>Student Name:</b> {{id_info.name}}
                     </p>
                     <p name="emailId" style="font-size: 16px;">
-                        <b>Student Email:</b> {{email_id}}
+                        <b>Student Email:</b> {{id_info.email}}
                     </p>
                     <p name="branch" style="font-size: 16px;">
-                        <b>Subject:</b> {{topic}}
+                        <b>Subject:</b> {{question_item.topic}}
                     </p>
                     <p name="branch" style="font-size: 16px;">
-                        <b>Question Type:</b> {{question_type}}
+                        <b>Question Type:</b> {{question_item.question_type}}
                     </p>
                     <p name="branch" style="font-size:16px;">
-                        <b>Difficulty Level:</b> {{difficulty_level}}
+                        <b>Difficulty Level:</b> {{question_item.difficulty_level}}
                     </p>
                 </div>
             </div>
@@ -200,14 +122,14 @@
 
                             <div class="panel-body">
                                 <p style="margin-top: 10px; font-size: 18px; padding: 7px">
-                                    {{question}}
+                                    {{question_item.question}}
                                 </p>
 
                                 <div class="radio">
                                     <label><p style="font-size: 15px">
                                         &nbsp;&nbsp;
                                         <input type="radio" name="optradio" id="optradioa" required>
-                                        {{option_a}}
+                                        {{question_item.option_a}}
                                     </p></label>
                                 </div>
 
@@ -215,7 +137,7 @@
                                     <label><p style="font-size: 15px">
                                         &nbsp;&nbsp;
                                         <input type="radio" name="optradio" id="optradiob">
-                                        {{option_b}}
+                                        {{question_item.option_b}}
                                     </p></label>
                                 </div>
 
@@ -223,7 +145,7 @@
                                     <label><p style="font-size: 15px">
                                         &nbsp;&nbsp;
                                         <input type="radio" name="optradio" id="optradioc">
-                                        {{option_c}}
+                                        {{question_item.option_c}}
                                     </p></label>
                                 </div>
 
@@ -231,7 +153,7 @@
                                     <label><p style="font-size: 15px">
                                         &nbsp;&nbsp;
                                         <input type="radio" name="optradio" id="optradiod">
-                                        {{option_d}}
+                                        {{question_item.option_d}}
                                     </p></label>
                                 </div>
 
@@ -243,7 +165,7 @@
 
                                 <form method="post" name="tokenForm">
                                     <input type="hidden" id="idToken" name="idToken" value="{{id_token}}">
-                                    <input type="hidden" id="topic" name="topic" value="{{topic}}">
+                                    <input type="hidden" id="topic" name="topic" value="{{question_item.topic}}">
                                     <input type="hidden" id="answerTicked" name="answerTicked">
                                     <input type="hidden" id="timeTaken" name="timeTaken">
                                 </form>
@@ -265,7 +187,7 @@
                 <div class="timer col-sm-3">
                     <div class="col-sm-12">
                         <div class="col-sm-6">
-                            <img src="{{picture}}" class="userim img-responsive">
+                            <img src="{{id_info.picture}}" class="userim img-responsive">
                         </div>
 
                         <div class="col-sm-6">
@@ -319,7 +241,7 @@
                                     tick();
                                 }
 
-                                countdown('{{time_limit}}');
+                                countdown('{{question_item.time_limit}}');
                                 </script>
                         </div>
                     </div>

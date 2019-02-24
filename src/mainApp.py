@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 from google.oauth2 import id_token
 from google.auth.transport import requests
@@ -6,53 +8,55 @@ import os
 import requests
 import traceback
 
-import demoSection
-import sportsSection
+import quizSection
 import storeInDemoDB
+import tokenSection
 
 
 app = Flask(__name__)
-URL = "https://oauth2.googleapis.com/tokeninfo"
+
 
 QUESTION_NUMBER = 0
 DIFFICULTY_LEVEL = 1
 CORRECT_ANS = ""
-CURRENT_ITEMS = []
+CURRENT_QUESTION_ITEMS = []
+
+ERROR_PAGE_TEMPLATE_FILE = "error_page.html"
+INDEX_PAGE_TEMPLATE_FILE = "index_page.html"
+DASHBOARD_PAGE_TEMPLATE_FILE = "dashboard.html"
+QUIZ_RULE_PAGE_TEMPLATE_FILE = "quiz_rules_page.html"
+MCQ_QUIZ_PAGE_TEMPLATE_FILE = "mcq_quiz_page.html"
+SUBJECTIVE_QUIZ_PAGE_TEMPLATE_FILE = "subjective_quiz_page.html"
+RESULT_PAGE_TEMPLATE_FILE = 'result_page.html'
 
 
 @app.route("/")
 def index():
+    global INDEX_PAGE_TEMPLATE_FILE
+    global QUESTION_NUMBER
     QUESTION_NUMBER = 0
-    return render_template("mainpage.html")
+
+    return render_template(INDEX_PAGE_TEMPLATE_FILE)
 
 
 @app.route("/get_started", methods=["GET", "POST"])
 def get_started():
+    global DASHBOARD_PAGE_TEMPLATE_FILE, ERROR_PAGE_TEMPLATE_FILE
     global QUESTION_NUMBER
     QUESTION_NUMBER = 0
+
     try:
         if(request.method == "POST"):
             id_token = request.form.get("idToken")
 
-            profile_name = ""
-            email_id = ""
-            picture = ""
-            if(id_token):
-                NEW_URL = URL + "?id_token=" + id_token
-                response = requests.get(url=NEW_URL)
-                data = response.json()
+            id_info = tokenSection.get_data_from_token(id_token)
+            if(bool(id_info)):
+                return render_template(
+                    DASHBOARD_PAGE_TEMPLATE_FILE,
+                    id_token=id_token,
+                    id_info=id_info)
 
-                if(data["name"] and data["email"]):
-                    profile_name = data["name"]
-                    email_id = data["email"]
-                    picture = data["picture"]
-
-        return render_template(
-            "dashboard.html",
-            id_token=id_token,
-            profile_name=profile_name,
-            email_id=email_id,
-            picture=picture)
+        return render_template(ERROR_PAGE_TEMPLATE_FILE)
 
     except BaseException:
         traceback.print_exc()
@@ -60,206 +64,104 @@ def get_started():
 
 @app.route("/quiz_rules", methods=["GET", "POST"])
 def quiz_rules():
+    global QUIZ_RULE_PAGE_TEMPLATE_FILE, ERROR_PAGE_TEMPLATE_FILE
     global QUESTION_NUMBER
     QUESTION_NUMBER = 0
+
     try:
         if(request.method == "POST"):
             id_token = request.form.get("idToken")
-
             topic = request.form.get("topic")
 
-            if(id_token):
-                NEW_URL = URL + "?id_token=" + id_token
-                response = requests.get(url=NEW_URL)
+            id_info = tokenSection.get_data_from_token(id_token)
+            if(bool(id_info)):
+                return render_template(
+                    QUIZ_RULE_PAGE_TEMPLATE_FILE,
+                    id_token=id_token,
+                    topic=topic)
 
-        return render_template(
-            "quiz_rules_page.html",
-            id_token=id_token,
-            topic=topic
-        )
+        return render_template(ERROR_PAGE_TEMPLATE_FILE)
 
     except BaseException:
         traceback.print_exc()
 
 
-@app.route("/demo_quiz", methods=["GET", "POST"])
-def demo_quiz():
+def predict_difficulty(CORRECT_ANS, previous_ans_ticked, DIFFICULTY_LEVEL):
+    if CORRECT_ANS == previous_ans_ticked and DIFFICULTY_LEVEL <= 2:
+        DIFFICULTY_LEVEL += 1
+
+    elif DIFFICULTY_LEVEL >= 2:
+        DIFFICULTY_LEVEL -= 1
+
+    return DIFFICULTY_LEVEL
+
+
+@app.route("/quiz", methods=["GET", "POST"])
+def quiz():
+    global MCQ_QUIZ_PAGE_TEMPLATE_FILE, SUBJECTIVE_QUIZ_PAGE_TEMPLATE_FILE, ERROR_PAGE_TEMPLATE_FILE
+    global DIFFICULTY_LEVEL, CURRENT_QUESTION_ITEMS, CORRECT_ANS
     global QUESTION_NUMBER
-    global CURRENT_ITEMS
-    question_type = "MCQ"
+
+    template_file = ""
 
     try:
         if(request.method == "POST"):
             id_token = request.form.get("idToken")
             topic = request.form.get("topic")
-
             previous_ans_ticked = request.form.get("answerTicked")
             previous_time_taken = request.form.get("timeTaken")
 
-            if(id_token):
-                NEW_URL = URL + "?id_token=" + id_token
-                response = requests.get(url=NEW_URL)
-                data = response.json()
-
-                profile_name = ""
-                email_id = ""
-                picture = ""
-
-                if(data["name"] and data["email"]):
-                    profile_name = data["name"]
-                    email_id = data["email"]
-                    picture = data["picture"]
-
-                QUESTION_NUMBER = QUESTION_NUMBER + 1
-
+            id_info = tokenSection.get_data_from_token(id_token)
+            if(bool(id_info)):
                 if previous_time_taken is not None:
-                    CURRENT_ITEMS.append(previous_time_taken)
-                    if QUESTION_NUMBER <= 11:
-                        CURRENT_ITEMS.append(previous_ans_ticked)
-                    storeInDemoDB.store_in_DB(CURRENT_ITEMS)
+                    CURRENT_QUESTION_ITEMS.append(previous_time_taken)
+                    if QUESTION_NUMBER <= 10:
+                        CURRENT_QUESTION_ITEMS.append(previous_ans_ticked)
+                    storeInDemoDB.store_in_DB(CURRENT_QUESTION_ITEMS)
 
-                question_item = demoSection.demo_questions(QUESTION_NUMBER)
+                QUESTION_NUMBER += 1
 
-                if bool(question_item):
-                    if QUESTION_NUMBER == 10:
-                        question_type = "Subjective"
-                        time_limit = 20
-                        difficulty_level = "-"
-                        description = "-"
+                if(topic == "Miscellaneous"):
+                    question_item = quizSection.demo_questions(
+                        topic, QUESTION_NUMBER)
 
-                        CURRENT_ITEMS = [
-                            QUESTION_NUMBER,
-                            question_type,
-                            difficulty_level,
-                            question_item["Question"],
-                            question_item["Correct Answer"],
-                            description]
+                elif topic in ["Sports", "GK", "Technology"]:
+                    DIFFICULTY_LEVEL = predict_difficulty(
+                        CORRECT_ANS, previous_ans_ticked, DIFFICULTY_LEVEL)
+                    question_item = quizSection.main_questions(
+                        topic, QUESTION_NUMBER, DIFFICULTY_LEVEL)
 
-                        return render_template(
-                            "subjective_quiz_page.html",
-                            id_token=id_token,
-                            profile_name=profile_name,
-                            email_id=email_id,
-                            picture=picture,
-                            topic=topic,
-                            question_no=QUESTION_NUMBER,
-                            question_type=question_type,
-                            difficulty_level=difficulty_level,
-                            question=question_item["Question"],
-                            time_limit=time_limit
-                        )
-
-                    CURRENT_ITEMS = [
+                if bool(question_item) and QUESTION_NUMBER <= 10:
+                    CURRENT_QUESTION_ITEMS = [
                         QUESTION_NUMBER,
-                        question_type,
-                        question_item["Difficulty Level"],
-                        question_item["Question"],
-                        question_item["Correct Answer"],
-                        question_item["Description"]]
+                        question_item["question_type"],
+                        question_item["difficulty_level"],
+                        question_item["question"],
+                        question_item["correct_answer"],
+                        question_item["description"],
+                        question_item["time_limit"]
+                    ]
+
+                    if QUESTION_NUMBER < 10:
+                        CORRECT_ANS = question_item["correct_answer"]
+                        template_file = MCQ_QUIZ_PAGE_TEMPLATE_FILE
+
+                    elif QUESTION_NUMBER == 10:
+                        template_file = SUBJECTIVE_QUIZ_PAGE_TEMPLATE_FILE
 
                     return render_template(
-                        "mcq_quiz_page.html",
+                        template_file,
                         id_token=id_token,
-                        profile_name=profile_name,
-                        email_id=email_id,
-                        picture=picture,
-                        topic=topic,
+                        id_info=id_info,
                         question_no=QUESTION_NUMBER,
-                        question_type=question_type,
-                        difficulty_level=question_item["Difficulty Level"],
-                        question=question_item["Question"],
-                        option_a=question_item["Option A"],
-                        option_b=question_item["Option B"],
-                        option_c=question_item["Option C"],
-                        option_d=question_item["Option D"],
-                        time_limit=question_item["Time Limit"]
+                        question_item=question_item
                     )
 
-        return render_template("result_page.html")
+        if QUESTION_NUMBER > 10:
+            # return redirect(url_for('result_page', id_info=id_info))
+            return redirect(url_for('result_page'))
 
-    except BaseException:
-        traceback.print_exc()
-
-
-@app.route("/main_quiz", methods=["GET", "POST"])
-def main_quiz():
-    global QUESTION_NUMBER
-    global DIFFICULTY_LEVEL
-    global CORRECT_ANS
-    question_type = "MCQ"
-
-    try:
-        if(request.method == "POST"):
-            id_token = request.form.get("idToken")
-            topic = request.form.get("topic")
-
-            ans_ticked = request.form.get("answerTicked")
-            time_taken = request.form.get("timeTaken")
-
-            if(id_token):
-                NEW_URL = URL + "?id_token=" + id_token
-                response = requests.get(url=NEW_URL)
-                data = response.json()
-
-                profile_name = ""
-                email_id = ""
-                picture = ""
-
-                if(data["name"] and data["email"]):
-                    profile_name = data["name"]
-                    email_id = data["email"]
-                    picture = data["picture"]
-
-                QUESTION_NUMBER = QUESTION_NUMBER + 1
-
-                if CORRECT_ANS == ans_ticked:
-                    if DIFFICULTY_LEVEL <= 2:
-                        DIFFICULTY_LEVEL += 1
-
-                else:
-                    if DIFFICULTY_LEVEL >= 2:
-                        DIFFICULTY_LEVEL -= 1
-
-                question_item = sportsSection.sports_questions(
-                    topic, QUESTION_NUMBER, DIFFICULTY_LEVEL)
-                CORRECT_ANS = question_item["Correct Answer"]
-
-                if QUESTION_NUMBER == 10:
-                    question_type = "Subjective"
-                    time_limit = 20
-                    difficulty_level = "-"
-
-                    return render_template(
-                        "subjective_quiz_page.html",
-                        id_token=id_token,
-                        profile_name=profile_name,
-                        email_id=email_id,
-                        picture=picture,
-                        topic=topic,
-                        question_no=QUESTION_NUMBER,
-                        question_type=question_type,
-                        difficulty_level=difficulty_level,
-                        question=question_item["Question"],
-                        time_limit=time_limit
-                    )
-
-        return render_template(
-            "mcq_quiz_page.html",
-            id_token=id_token,
-            profile_name=profile_name,
-            email_id=email_id,
-            picture=picture,
-            topic=topic,
-            question_no=QUESTION_NUMBER,
-            question_type=question_type,
-            difficulty_level=question_item["Difficulty Level"],
-            question=question_item["Question"],
-            option_a=question_item["Option A"],
-            option_b=question_item["Option B"],
-            option_c=question_item["Option C"],
-            option_d=question_item["Option D"],
-            time_limit=question_item["Time Limit"]
-        )
+        return render_template(ERROR_PAGE_TEMPLATE_FILE)
 
     except BaseException:
         traceback.print_exc()
@@ -267,11 +169,9 @@ def main_quiz():
 
 @app.route("/result", methods=["GET", "POST"])
 def result_page():
-    print("hi")
-    if(request.method == "POST"):
-        print(request.form)
-
-    return render_template("result_page.html")
+    #id_token = request.form.get['id_token']
+    # print(request.form)
+    return render_template(RESULT_PAGE_TEMPLATE_FILE)
 
 
 if __name__ == "__main__":

@@ -1,9 +1,10 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <title>Results</title>
+    <title>Your Quiz Report Card</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
@@ -12,9 +13,206 @@
     <script src="https://apis.google.com/js/platform.js" async defer></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
 
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" type="text/css" href="./static/css/result_page_style.css"/>
+
 </head>
 
 <body>
-    Result
+    <br><br>
+    <center>
+        <img class="congrats" src="/static/images/congratulations_result_page.png">
+        <p style="font-size:40px; text-shadow: 2px 2px rgba(0, 0, 0, 0.8);">
+            CONGRATULATIONS!
+        </p><br>
+
+        <p style="font-size:25px">You got a score of </p>
+        <p style="font-size:30px"><b>{{total_points}}</b></p><br>
+        <p style="font-size:20px">in <b>DEMO</b> Quiz</p>
+        <br><br><br><br>
+
+
+        <button class="collapsible"><b>SEE YOUR MCQ ANSWERS (QUESTION 1-9)</b></button>
+        <div class="content"><br><br>
+            <table id="result">
+                <tr>
+                    <th><div><b>QUESTION NO.</b></div></th>
+                    <th><div><b>DIFFICULTY LEVEL</b></div></th>
+                    <th><div><b>QUESTION</b></div></th>
+                    <th><div><b>TIME TAKEN (%)</b></div></th>
+                    <th><div><b>YOUR ANSWER</b></div></th>
+                    <th><div><b>CORRECT ANSWER</b></div></th>
+                    <th><div><b>DESCRIPTION</b></div></th>
+                    <th><div><b>STATUS</b></div></th>
+                    <th><div><b>POINTS SCORED</b></div></th>
+                </tr>
+
+                <script>
+                    //creating 9 rows
+                    for (var i = 1; i < 10; i++)
+                    {
+
+                        var table_row = "<tr>";
+                        table_row += "<td><b><div id=\"question_number_" + i + "\"></div></b></td>";
+                        table_row += "<td><b><div id=\"difficulty_level_" + i + "\"></div></b></td>";
+                        table_row += "<td><b><div id=\"question_" + i + "\"></div></b></td>";
+                        table_row += "<td><b><div id=\"time_taken_" + i + "\"></div></b></td>";
+                        table_row += "<td><b><div id=\"answer_ticked_" + i + "\"></div></b></td>";
+                        table_row += "<td><b><div id=\"correct_answer_" + i + "\"></div></b></td>";
+                        table_row += "<td><b><div id=\"description_" + i + "\"></div></b></td>";
+                        table_row += "<td><b><div id=\"status_" + i + "\"></div></b></td>";
+                        table_row += "<td><b><div id=\"point_scored_" + i + "\"></div></b></td>";
+
+                        table_row += "</tr>";
+                        document.write(table_row);
+                    }
+                </script>
+            </table>
+            <br><br><br><br>
+        </div>
+        <br><br><br>
+
+        <button class="collapsible"><b>SEE YOUR SUBJECTIVE ANSWER (QUESTION 10)</b></button>
+        <div class="content"><br><br>
+            <table>
+                <tr>
+                    <td><p style="font-size:15px;padding: 0px 15px 0px 15px;">
+                        <b>POINTS SCORED</b>
+                    </p></td>
+
+                    <td><p style="font-size:15px;padding: 0px 15px 0px 15px;">
+                            <b>:</b>
+                        </p></td>
+
+                    <td><p id="point_scored_10" style="font-size:15px;padding: 0px 15px 0px 15px;">
+                        40%
+                    </p></td>
+                </tr>
+
+                <tr>
+                    <td><p style="font-size:15px;padding: 15px;">
+                        <b>TIME TAKEN (%)</b>
+                    </p></td>
+                    <td><p style="font-size:15px;padding: 15px;">
+                        <b>:</b>
+                    </p></td>
+                    <td><p id="time_taken_10" style="font-size:20px;padding: 15px;">
+                    </p></td>
+                </tr>
+            </table>
+
+            <p style="font-size:15px; text-align:left;">
+                <b>QUESTION. <p id="question_10" style="font-size:15px; text-align:left;"></p></b>
+            </p><br>
+            <p style="font-size:15px; text-align:left;">
+                <b>YOUR ANSWER.</b> <p id="answer_ticked_10" style="font-size:15px; text-align:left;"></p>
+            </p><br>
+            <p style="font-size:15px; text-align:left;">
+                <b>CORRECT ANSWER.</b> <p id="correct_answer_10" style="font-size:15px; text-align:left;"></p>
+            </p>
+            <br><br>
+        </div>
+
+        <script>
+            var coll = document.getElementsByClassName("collapsible");
+            var i;
+
+            for(i = 0; i < coll.length; i++)
+            {
+                coll[i].addEventListener(
+                    "click",
+                    function()
+                    {
+                        this.classList.toggle("active");
+                        var content = this.nextElementSibling;
+                        if(content.style.maxHeight)
+                        {
+                            content.style.maxHeight = null;
+                        }
+                        else
+                        {
+                            content.style.maxHeight = content.scrollHeight + "px";
+                        }
+                    }
+                );
+            }
+
+
+            /*
+            <tr>
+                <td><div id="question_number_1"></div></td>
+                <td><div id="difficulty_level_1"></div></td>
+                <td><div id="question_1"></div></td>
+                <td><div id="time_taken_1"></div></td>
+                <td><div id="answer_ticked_1"></div></td>
+                <td><div id="correct_answer_1"></div></td>
+                <td><div id="description_1"></div></td>
+                <td><div id="status_1"></div></td>
+                <td><div id="point_scored_1"></div></td>
+              </tr>
+            */
+
+
+            //table column values
+            var question_number = JSON.parse('{{ question_number|tojson|safe }}');
+            var difficulty_level = JSON.parse('{{ difficulty_level|tojson|safe }}');
+            var question = JSON.parse('{{ question|tojson|safe }}');
+            var time_taken = JSON.parse('{{ time_taken|tojson|safe }}');
+            var answer_ticked = JSON.parse('{{ answer_ticked|tojson|safe }}');
+            var correct_answer = JSON.parse('{{ correct_answer|tojson|safe }}');
+            var description = JSON.parse('{{ description|tojson|safe }}');
+            var point_scored = JSON.parse('{{ point_scored|tojson|safe }}');
+
+            for(i = 0; i <10; i++)
+            {
+                if(question_number[i] < 10)
+                {
+                    document.getElementById("question_number_" +
+                            question_number[i]).innerHTML = question_number[i];
+                    document.getElementById("difficulty_level_" +
+                            question_number[i]).innerHTML = difficulty_level[i];
+                    document.getElementById("description_" +
+                            question_number[i]).innerHTML = description[i];
+
+                    if(point_scored[i] > 0)
+                    {
+                        document.getElementById("status_" +
+                            question_number[i]).innerHTML = "&#10004";
+                    }
+                    else
+                    {
+                        document.getElementById("status_" +
+                            question_number[i]).innerHTML = "&#10008;";
+                    }
+                }
+                document.getElementById("question_" +
+                        question_number[i]).innerHTML = question[i];
+                document.getElementById("time_taken_" +
+                        question_number[i]).innerHTML = time_taken[i];
+                document.getElementById("answer_ticked_" +
+                        question_number[i]).innerHTML = answer_ticked[i];
+                document.getElementById("correct_answer_" +
+                        question_number[i]).innerHTML = correct_answer[i];
+
+                if(question_number[i] == 10)
+                {
+                    document.getElementById("point_scored_" +
+                            question_number[i]).innerHTML = point_scored[i] + "/10";
+                }
+                else
+                {
+                    document.getElementById("point_scored_" +
+                            question_number[i]).innerHTML = point_scored[i];
+                }
+            }
+        </script>
+        <br><br>
+
+        <a href="{{url_for('index')}}"><button type="button" class="button">
+            <b>⬅</b> Go Back to Main Page
+        </button></a>
+    </center><br>
 </body>
 </html>

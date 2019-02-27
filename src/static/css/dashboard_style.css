@@ -7,7 +7,7 @@ body
 #logo
 {
     -webkit-filter: grayscale(0%) hue-rotate(180deg) contrast(200%);
-    filter:grayscale(0%) hue-rotate(180deg) contrast(200%);
+    filter: grayscale(0%) hue-rotate(180deg) contrast(200%);
 }
 
 .sidebar

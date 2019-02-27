@@ -9,7 +9,7 @@ body, html
 {
     background-image: url("/static/images/background_mainpage.jpg");
     -webkit-filter: grayscale(20%) blur(8px);
-    filter:grayscale(20%) blur(8px);
+    filter: grayscale(20%) blur(8px);
 
     height: 100%;
     background-position: center;
@@ -45,7 +45,7 @@ img
     background-color: darkorange;
     color: white;
     padding: 16px;
-    font-size: 16px;
+    font-size: 20px;
     border: none;
     cursor: pointer;
 }
@@ -64,7 +64,6 @@ img
     font-size: 13px;
     background-color: white;
     min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;
 }
 

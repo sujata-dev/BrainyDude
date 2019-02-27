@@ -8,10 +8,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://apis.google.com/js/platform.js"></script>
+
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
     <link rel="stylesheet" type="text/css" href="./static/css/dashboard_style.css"/>
-
 
     <script>
         function openNav()
@@ -51,6 +51,12 @@
         function submitDemoForm()
         {
             //document.getElementById("idToken").value = '{{id_token}}';
+            document.getElementById("tokenDemoForm").action = "/quiz_rules";
+
+            if('{{demo_quiz_exists}}' == 'True')
+            {
+                document.getElementById("tokenDemoForm").action = "/already_attempted";
+            }
             document.getElementById("tokenDemoForm").submit();
         }
 
@@ -73,53 +79,72 @@
 </head>
 
 <body>
-    <div id="mySidebar" class="sidebar">
-        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
+    <div id="mySidebar" class="sidebar" style="box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8);">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()"
+                style="text-shadow: 2px 2px rgba(0, 0, 0, 0.8);">
+            <b>×</b>
+        </a>
         <br><br>
         <center>
-            <a href="#"><img src="{{id_info.picture}}"></a><br>
-            <a href="#">Welcome, {{id_info.name}}</a>
-            <a href="#">{{id_info.email}}</a><br><br><br>
-            <a href="#" onclick="signOut()">Sign Out</a>
+            <a href="javascript:;">
+                <img src="{{id_info.picture}}" style="box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8);">
+            </a><br>
+
+            <a href="javascript:;" style="text-shadow: 2px 2px rgba(0, 0, 0, 0.8);">
+                Welcome, {{id_info.name}}
+            </a>
+            <a href="javascript:;" style="text-shadow: 2px 2px rgba(0, 0, 0, 0.8);">
+                {{id_info.email}}
+            </a><br><br><br>
+            <a href="javascript:;" onclick="signOut()" style="text-shadow: 2px 2px rgba(0, 0, 0, 0.8);">
+                Sign Out
+            </a>
         </center>
     </div>
 
     <div id="main">
-        <button class="openbtn" onclick="openNav()">☰ My Account</button>
+        <button class="openbtn" onclick="openNav()" style="box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8);">
+            <b>☰ My Account</b>
+        </button>
         <h2></h2><p></p>
 
-        <div id="get_started" class="tabcontent">
-            <h1>Become a</h1>
+        <div id="get_started" class="tabcontent" style="box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8);">
+            <h1><b>Become a</b></h1>
             <img id="logo" src="/static/images/brainydude_logo.png"/>
             <p style="font-size: 20px;">A platform where the users can take
                 online adaptive tests in any field.</p>
+
             <b>
                 <p style="font-size: 20px;">So, go ahead and wrack your
                 brains right now!</p>
             </b>
         </div>
 
-        <div id="our_team" class="tabcontent">
+        <div id="our_team" class="tabcontent" style="box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8);">
             <div class="our_team_row">
+                <br><br>
                 <div class="our_team_column">
-                    <img src="/static/images/team_member_sujata.jpg" class="our_team_img"><br><br>
+                    <img src="/static/images/team_member_sujata.jpg" class="our_team_img"
+                            style="box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8);"><br><br>
                     <b><p style="font-size: 25px;"> Sujata Dev </p></b>
                 </div>
                 <div class="our_team_column">
-                    <img src="/static/images/team_member_tanima.jpg" class="our_team_img"><br><br>
+                    <img src="/static/images/team_member_tanima.jpg" class="our_team_img"
+                            style="box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8);"><br><br>
                     <b><p style="font-size: 25px;"> Tanima Tiwari </p></b>
                 </div>
                 <div class="our_team_column">
-                    <img src="/static/images/team_member_tanusha.jpg" class="our_team_img"><br><br>
+                    <img src="/static/images/team_member_tanusha.jpg" class="our_team_img"
+                            style="box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8);"><br><br>
                     <b><p style="font-size: 25px;"> Tanusha Jain </p></b>
                 </div>
             </div>
-
         </div>
 
-        <div id="contact_us" class="tabcontent">
-            <br><br><br><br>
-            <b><h1>Questions? Comments? We are all ears. </h1></b><br><br>
+        <div id="contact_us" class="tabcontent" style="box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8);">
+            <br><br><br>
+            <b><h1>Questions? Comments?</h1></b><br>
+            <h3>We are all ears.</h3><br><br>
             <b>
                 <p style="font-size: 25px;"> Mail it to us on
                     <a href="mailto:brainydude2019@gmail.com">
@@ -128,20 +153,29 @@
         </div>
 
         <b>
-            <button class="tablink" onclick="openTab('get_started', this, '#ffd480')"
-            id="defaultOpen">Get Started</button>
-            <button class="tablink" onclick="openTab('our_team', this, '#26734d')">
-                Our Team</button>
-            <button class="tablink" onclick="openTab('contact_us', this, '#6fdcdc')">
-                Contact Us</button>
+            <button class="tablink" onclick="openTab('get_started', this, '#181818')" id="defaultOpen"
+                    style="color: white; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8); text-shadow: 2px 2px rgba(0, 0, 0, 0.8);">
+                Get Started
+            </button>
+
+            <button class="tablink" onclick="openTab('our_team', this, '#181818')"
+                    style="color: white; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8); text-shadow: 2px 2px rgba(0, 0, 0, 0.8);">
+                Our Team
+            </button>
+
+            <button class="tablink" onclick="openTab('contact_us', this, '#181818')"
+                    style="color: white; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8);text-shadow: 2px 2px rgba(0, 0, 0, 0.8);">
+                Contact Us
+            </button>
         </b>
 
         <script>
             document.getElementById("defaultOpen").click();
         </script>
 
-        <br><br><br><br>
-        <center><h1> Choose your preference for quiz </h1></center><br><br>
+        <br><br><br><hr><br><br>
+
+        <center><h1><b>Choose your preference for quiz </b></h1></center><br><br>
 
         <div class="quiz_pref_row">
             <div class="quiz_pref_column">
@@ -152,7 +186,8 @@
 
                         <a href="javascript:;" onclick="submitTechForm()">
 
-                            <img class="quiz_pref_img" src="/static/images/preference_technology.png">
+                            <img class="quiz_pref_img" src="/static/images/preference_technology.png"
+                                    style="box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8);">
                         </a>
                     </form>
 
@@ -166,7 +201,8 @@
                         <input type="hidden" id="topic" name="topic" value="GK">
 
                         <a href="javascript:;" onclick="submitGKForm()">
-                            <img class="quiz_pref_img" src="/static/images/preference_gk.png">
+                            <img class="quiz_pref_img" src="/static/images/preference_gk.png"
+                                    style="box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8);">
                         </a>
                     </form>
                 </div>
@@ -179,20 +215,22 @@
                         <input type="hidden" id="topic" name="topic" value="Sports">
 
                         <a href="javascript:;" onclick="submitSportsForm()">
-                            <img class="quiz_pref_img" src="/static/images/preference_sports.png">
+                            <img class="quiz_pref_img" src="/static/images/preference_sports.png"
+                                    style="box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8);">
                         </a>
                     </form>
                 </div>
             </div>
         </div>
 
-    <br><br>
+    <br><br><br>
     <center><b>
-        <form action="/quiz_rules" method="post" name="tokenDemoForm" id="tokenDemoForm">
+        <form method="post" name="tokenDemoForm" id="tokenDemoForm">
             <input type="hidden" id="idToken" name="idToken" value="{{id_token}}">
             <input type="hidden" id="topic" name="topic" value="Miscellaneous">
 
-            <button class="demo_quiz_link" onclick="submitDemoForm()">
+            <button class="demo_quiz_link" onclick="submitDemoForm()"
+                    style="box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8);text-shadow: 2px 2px rgba(0, 0, 0, 0.8);">
                 Need to practice? Take a demo quiz ⟶
             </button>
         </form>

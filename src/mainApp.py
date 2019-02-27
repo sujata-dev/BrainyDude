@@ -19,7 +19,7 @@ app = Flask(__name__)
 QUESTION_NUMBER = 0
 DIFFICULTY_LEVEL = 1
 CORRECT_ANS = ""
-CURRENT_QUESTION_ITEMS = []
+CURRENT_QUESTION_ITEMS = {}
 
 ERROR_PAGE_TEMPLATE_FILE = "error_page.html"
 INDEX_PAGE_TEMPLATE_FILE = "index_page.html"
@@ -28,6 +28,7 @@ QUIZ_RULE_PAGE_TEMPLATE_FILE = "quiz_rules_page.html"
 MCQ_QUIZ_PAGE_TEMPLATE_FILE = "mcq_quiz_page.html"
 SUBJECTIVE_QUIZ_PAGE_TEMPLATE_FILE = "subjective_quiz_page.html"
 RESULT_PAGE_TEMPLATE_FILE = 'result_page.html'
+ALREADY_ATTEMPTED_DEMO_QUIZ_TEMPLATE_FILE = 'already_attempted_demo_quiz.html'
 
 
 @app.route("/")
@@ -51,10 +52,16 @@ def get_started():
 
             id_info = tokenSection.get_data_from_token(id_token)
             if(bool(id_info)):
+                demo_quiz_exists = storeInDemoDB.check_if_demo_table_exists(
+                    id_info["email"])
+                storeInDemoDB.extract_question_item_from_demo_table(
+                    id_info["email"])
+
                 return render_template(
                     DASHBOARD_PAGE_TEMPLATE_FILE,
                     id_token=id_token,
-                    id_info=id_info)
+                    id_info=id_info,
+                    demo_quiz_exists=demo_quiz_exists)
 
         return render_template(ERROR_PAGE_TEMPLATE_FILE)
 
@@ -114,10 +121,12 @@ def quiz():
             id_info = tokenSection.get_data_from_token(id_token)
             if(bool(id_info)):
                 if previous_time_taken is not None:
-                    CURRENT_QUESTION_ITEMS.append(previous_time_taken)
+                    CURRENT_QUESTION_ITEMS["time_taken"] = previous_time_taken
+
                     if QUESTION_NUMBER <= 10:
-                        CURRENT_QUESTION_ITEMS.append(previous_ans_ticked)
-                    storeInDemoDB.store_in_DB(CURRENT_QUESTION_ITEMS)
+                        CURRENT_QUESTION_ITEMS["answer_ticked"] = previous_ans_ticked
+
+                    storeInDemoDB.store_in_DB(id_info, CURRENT_QUESTION_ITEMS)
 
                 QUESTION_NUMBER += 1
 
@@ -132,15 +141,7 @@ def quiz():
                         topic, QUESTION_NUMBER, DIFFICULTY_LEVEL)
 
                 if bool(question_item) and QUESTION_NUMBER <= 10:
-                    CURRENT_QUESTION_ITEMS = [
-                        QUESTION_NUMBER,
-                        question_item["question_type"],
-                        question_item["difficulty_level"],
-                        question_item["question"],
-                        question_item["correct_answer"],
-                        question_item["description"],
-                        question_item["time_limit"]
-                    ]
+                    CURRENT_QUESTION_ITEMS.update(question_item)
 
                     if QUESTION_NUMBER < 10:
                         CORRECT_ANS = question_item["correct_answer"]
@@ -159,7 +160,10 @@ def quiz():
 
         if QUESTION_NUMBER > 10:
             # return redirect(url_for('result_page', id_info=id_info))
-            return redirect(url_for('result_page'))
+            return render_template(
+                "results_are_ready.html",
+                id_token=id_token,
+                topic=topic)
 
         return render_template(ERROR_PAGE_TEMPLATE_FILE)
 
@@ -169,9 +173,47 @@ def quiz():
 
 @app.route("/result", methods=["GET", "POST"])
 def result_page():
-    #id_token = request.form.get['id_token']
-    # print(request.form)
-    return render_template(RESULT_PAGE_TEMPLATE_FILE)
+    try:
+        if(request.method == "POST"):
+            id_token = request.form.get("idToken")
+            topic = request.form.get("topic")
+
+            id_info = tokenSection.get_data_from_token(id_token)
+            if(bool(id_info)):
+                question_item = storeInDemoDB.extract_question_item_from_demo_table(
+                    id_info["email"])
+
+                return render_template(
+                    RESULT_PAGE_TEMPLATE_FILE,
+                    question_number=question_item["question_number"],
+                    difficulty_level=question_item["difficulty_level"],
+                    question=question_item["question"],
+                    time_taken=question_item["time_taken"],
+                    answer_ticked=question_item["answer_ticked"],
+                    correct_answer=question_item["correct_answer"],
+                    description=question_item["description"],
+                    point_scored=question_item["point_scored"],
+                    total_points=question_item["total_points"])
+
+        return render_template(ERROR_PAGE_TEMPLATE_FILE)
+
+    except BaseException:
+        traceback.print_exc()
+
+
+@app.route("/already_attempted", methods=["GET", "POST"])
+def already_attempted():
+    try:
+        if(request.method == "POST"):
+            id_token = request.form.get("idToken")
+            topic = request.form.get("topic")
+        return render_template(
+            ALREADY_ATTEMPTED_DEMO_QUIZ_TEMPLATE_FILE,
+            id_token=id_token,
+            topic=topic)
+
+    except BaseException:
+        traceback.print_exc()
 
 
 if __name__ == "__main__":

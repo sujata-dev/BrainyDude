@@ -87,16 +87,20 @@
     <div class="bg-text">
         <br>
         <img src="/static/images/brainydude_logo.png"/>
-        <h1 style="font-size:50px">An Adaptive Assessment Platform<h1>
-        <br>
+        <h1 style="font-size:50px;text-shadow: 2px 2px rgba(0, 0, 0, 0.8);">
+            An Adaptive Assessment Platform
+        </h1>
+        <br><br><br><br>
 
         <center><div class="g-signin2" data-onsuccess="onSignIn"></div></center>
         <br>
 
         <b>
             <div class="dropdown" id="getStarted">
-                <button class="dropbtn" id="getStartedBtn"> </button>
-                <div class="dropdown-content">
+                <button class="dropbtn" id="getStartedBtn"
+                        style="box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8); text-shadow: 2px 2px rgba(0, 0, 0, 0.8);">
+                </button>
+                <div class="dropdown-content" style="box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8);">
                     <form action="/get_started" method="post" name="tokenForm" id="tokenForm">
                         <input type="hidden" id="idToken" name="idToken">
                         <a href="javascript:;" onclick="submitForm()">Go to Dashboard</a>

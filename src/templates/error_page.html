@@ -5,13 +5,26 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+    <style>
+        .time_out
+        {
+            width: 250px;
+            height: auto;
+        }
+    </style>
 </head>
 <body>
     <center>
         <br><br>
-        <h1>Error!</h1>
-        <br>
-        <h3>If you are seeing this page, <b>SOMETHING WENT WRONG</b>.</h3><br>
+        <h1 style="color:red; text-shadow: 2px 2px rgba(0, 0, 0, 0.8);">
+            <b>ERROR!</b>
+        </h1><br>
+
+        <h3>If you are seeing this page, <b>SOMETHING WENT WRONG.</b></h3><br>
+        <h3><b>OR</b></h3><br>
+        <h3>Maybe you ran out of time.</h3><br>
+        <img class="time_out" src="/static/images/time_out_error_page.png"/><br>
         <h3>
             Click
             <a href="{{url_for('index')}}"><b><u>here</u></b></a>

@@ -44,6 +44,7 @@
 
             total_time = '{{question_item.time_limit}}';
             time_taken_in_sec = (total_time * 60) - time_left_in_sec;
+            time_taken_in_min = time_taken_in_sec / 60
 
             var options = document.getElementsByName('optradio');
 
@@ -57,7 +58,7 @@
             }
 
             document.getElementById("answerTicked").value = answerTicked;
-            document.getElementById("timeTaken").value = time_taken_in_sec;
+            document.getElementById("timeTaken").value = time_taken_in_min;
 
             document.getElementById("tokenForm").action = "/quiz";
             document.getElementById("tokenForm").submit();
@@ -223,7 +224,8 @@
                                         {
                                             if(time_left_in_sec == 0)
                                             {
-                                                alert("Time over!")
+                                                alert("Time over! This test is cancelled")
+                                                window.location.href = "{{url_for('get_started')}}"
                                             }
                                             if(mins > 1)
                                             {

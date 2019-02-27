@@ -15,7 +15,7 @@ GK_MCQS_FILE = PATH + "/" + "gkMCQs.csv"
 GK_SUBJECTIVE_FILE = PATH + "/" + "gkSubjective.csv"
 
 TECH_MCQS_FILE = PATH + "/" + "techMCQs.csv"
-TECH_SUBJECTIVE_FILE = ""
+TECH_SUBJECTIVE_FILE = "/" + "techSubjective.csv"
 
 
 MCQS_FILE = ""
@@ -26,6 +26,7 @@ quizdata = []
 
 def main_questions(topic, QUESTION_NUMBER, DIFFICULTY_LEVEL):
     question_item = {}
+    question_item["question_number"] = QUESTION_NUMBER
     question_item["topic"] = topic
 
     MCQS_FILE = {
@@ -35,7 +36,7 @@ def main_questions(topic, QUESTION_NUMBER, DIFFICULTY_LEVEL):
     SUBJECTIVE_FILE = {
         'Sports': SPORTS_SUBJECTIVE_FILE,
         'GK': GK_SUBJECTIVE_FILE,
-        'Technology': GK_SUBJECTIVE_FILE}.get(topic)
+        'Technology': TECH_SUBJECTIVE_FILE}.get(topic)
 
     if QUESTION_NUMBER == 10:
         with open(SUBJECTIVE_FILE) as file:
@@ -100,6 +101,7 @@ def main_questions(topic, QUESTION_NUMBER, DIFFICULTY_LEVEL):
 
 def demo_questions(topic, QUESTION_NUMBER):
     question_item = {}
+    question_item["question_number"] = QUESTION_NUMBER
     question_item["topic"] = topic
 
     if QUESTION_NUMBER == 10:

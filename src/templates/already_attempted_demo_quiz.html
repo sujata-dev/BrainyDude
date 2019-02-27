@@ -1,0 +1,64 @@
+<html>
+<head>
+    <title>BrainyDude: Already Attempted This One.</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" type="text/css" href="./static/css/already_attempted_demo_quiz_style.css"/>
+
+    <script>
+        function submitDemoForm()
+        {
+            document.getElementById("tokenDemoForm").submit();
+        }
+        function submitResultForm()
+        {
+            document.getElementById("tokenResultForm").submit();
+        }
+    </script>
+</head>
+</body>
+    <div class="bg-image"></div>
+    <div class="bg-text">
+        <br><br>
+        <p style="font-size:70px;text-shadow: 2px 2px rgba(0, 0, 0, 0.8);">
+            <b>Oh.</b>
+        </p><br>
+        <p style="font-size:30px;text-shadow: 2px 2px rgba(0, 0, 0, 0.8);">
+            <b>LOOKS LIKE YOU ALREADY GAVE THE DEMO TEST ONCE.</b>
+        </p>
+        <br><br><br><br><br><br>
+
+        <form action="/quiz_rules" method="post" name="tokenDemoForm" id="tokenDemoForm">
+            <input type="hidden" id="idToken" name="idToken" value="{{id_token}}">
+            <input type="hidden" id="topic" name="topic" value="Miscellaneous">
+        </form>
+
+        <form action="/result" method="post" name="tokenResultForm" id="tokenResultForm">
+            <input type="hidden" id="idToken" name="idToken" value="{{id_token}}">
+            <input type="hidden" id="topic" name="topic" value="Miscellaneous">
+        </form>
+
+        <div id="buttons">
+            <button class="button" onclick="submitDemoForm()"><b>
+                <i class="w3-spin fa fa-refresh"></i> &nbsp;Take Test again
+            </b></button>
+
+            <button class="button" onclick="submitResultForm()"><b>
+                <span class="glyphicon glyphicon-file"></span> &nbsp;View Current Result
+            </b></button>
+        </div>
+    </div>
+</body>
+</html>

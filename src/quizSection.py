@@ -15,7 +15,7 @@ GK_MCQS_FILE = PATH + "/" + "gkMCQs.csv"
 GK_SUBJECTIVE_FILE = PATH + "/" + "gkSubjective.csv"
 
 TECH_MCQS_FILE = PATH + "/" + "techMCQs.csv"
-TECH_SUBJECTIVE_FILE = "/" + "techSubjective.csv"
+TECH_SUBJECTIVE_FILE = PATH + "/" + "techSubjective.csv"
 
 
 MCQS_FILE = ""

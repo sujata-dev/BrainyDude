@@ -9,7 +9,7 @@ import requests
 import traceback
 
 import quizSection
-import storeInDemoDB
+import storeInDB
 import tokenSection
 
 
@@ -29,6 +29,8 @@ MCQ_QUIZ_PAGE_TEMPLATE_FILE = "mcq_quiz_page.html"
 SUBJECTIVE_QUIZ_PAGE_TEMPLATE_FILE = "subjective_quiz_page.html"
 RESULT_PAGE_TEMPLATE_FILE = 'result_page.html'
 ALREADY_ATTEMPTED_DEMO_QUIZ_TEMPLATE_FILE = 'already_attempted_demo_quiz.html'
+STATS_AVAILABLE_TEMPLATE_FILE = "stats_available.html"
+STATS_NOT_AVAILABLE_TEMPLATE_FILE = "no_stats_available.html"
 
 
 @app.route("/")
@@ -52,10 +54,10 @@ def get_started():
 
             id_info = tokenSection.get_data_from_token(id_token)
             if(bool(id_info)):
-                demo_quiz_exists = storeInDemoDB.check_if_demo_table_exists(
+                demo_quiz_exists = storeInDB.check_if_demo_table_exists(
                     id_info["email"])
-                storeInDemoDB.extract_question_item_from_demo_table(
-                    id_info["email"])
+
+                storeInDB.deleting_tables_with_lesser_records()
 
                 return render_template(
                     DASHBOARD_PAGE_TEMPLATE_FILE,
@@ -126,7 +128,7 @@ def quiz():
                     if QUESTION_NUMBER <= 10:
                         CURRENT_QUESTION_ITEMS["answer_ticked"] = previous_ans_ticked
 
-                    storeInDemoDB.store_in_DB(id_info, CURRENT_QUESTION_ITEMS)
+                    storeInDB.store_in_DB(id_info, CURRENT_QUESTION_ITEMS)
 
                 QUESTION_NUMBER += 1
 
@@ -180,11 +182,12 @@ def result_page():
 
             id_info = tokenSection.get_data_from_token(id_token)
             if(bool(id_info)):
-                question_item = storeInDemoDB.extract_question_item_from_demo_table(
-                    id_info["email"])
+                question_item = storeInDB.extract_question_item_from_table(
+                    id_info["email"], topic)
 
                 return render_template(
                     RESULT_PAGE_TEMPLATE_FILE,
+                    topic=topic,
                     question_number=question_item["question_number"],
                     difficulty_level=question_item["difficulty_level"],
                     question=question_item["question"],
@@ -211,6 +214,30 @@ def already_attempted():
             ALREADY_ATTEMPTED_DEMO_QUIZ_TEMPLATE_FILE,
             id_token=id_token,
             topic=topic)
+
+    except BaseException:
+        traceback.print_exc()
+
+
+@app.route("/statistics", methods=["GET", "POST"])
+def view_statistics():
+    try:
+        if(request.method == "POST"):
+            id_token = request.form.get("idToken")
+            topic = request.form.get("topic")
+
+            id_info = tokenSection.get_data_from_token(id_token)
+            if(bool(id_info)):
+                graph_items = storeInDB.extract_stats_from_table(
+                    id_info["email"], topic)
+
+                if(bool(graph_items)):
+                    return render_template(
+                        STATS_AVAILABLE_TEMPLATE_FILE,
+                        topic=topic,
+                        graph_items=graph_items)
+                return render_template(
+                    STATS_NOT_AVAILABLE_TEMPLATE_FILE, topic=topic)
 
     except BaseException:
         traceback.print_exc()

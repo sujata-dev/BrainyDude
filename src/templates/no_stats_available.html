@@ -1,0 +1,43 @@
+<html>
+<head>
+    <title>Your Statistics</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+    <script src = "https://www.gstatic.com/charts/loader.js"></script>
+    <script>
+        google.charts.load('current', {packages: ['corechart']});
+    </script>
+    <link rel="stylesheet" type="text/css" href="./static/css/stats_available_style.css"/>
+
+    <style>
+
+    </style>
+
+
+</head>
+
+<body>
+    <div class="bg-image"></div>
+    <div class="bg-text">
+        <h1 style="text-shadow: 2px 2px rgba(0, 0, 0, 0.8);"><b>No Statistics Available For {{topic}} Quizzes</b></h1><br><br>
+        <h3 style="text-shadow: 2px 2px rgba(0, 0, 0, 0.8);">Looks like you haven't completed any {{topic}} quizzes</h3><br>
+
+        <br><br>
+
+        <h3><a href="{{url_for('index')}}">
+            <button class="button"><b>
+                <span class="glyphicon glyphicon-home"></span> &nbsp;Go Back to Home Page
+            </b></button>
+        </a></h3>
+    </div>
+</body>
+</html>

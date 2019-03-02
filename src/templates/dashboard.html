@@ -13,6 +13,50 @@
 
     <link rel="stylesheet" type="text/css" href="./static/css/dashboard_style.css"/>
 
+    <style>
+    .fade_img
+    {
+        border-radius: 25px;
+        opacity: 1;
+        height: auto;
+        margin: auto;
+        position:relative;
+
+    }
+
+    .middle
+    {
+        transition: .5s ease;
+        opacity: 0;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        -ms-transform: translate(-50%, -50%);
+        text-align: center;
+    }
+
+    .fade_img:hover .quiz_pref_img
+    {
+        opacity: 0.6;
+    }
+
+    .fade_img:hover .middle
+    {
+        opacity: 1;
+    }
+
+    .text
+    {
+        background-color: #003333;
+        color: white;
+        border-radius: 25px;
+        font-size: 16px;
+        padding: 16px 32px;
+        text-shadow: 2px 2px rgba(0, 0, 0, 0.8);
+    }
+
+    </style>
     <script>
         function openNav()
         {
@@ -66,14 +110,29 @@
             document.getElementById("tokenSportsForm").submit();
         }
 
+        function submitSportsStatsForm()
+        {
+            document.getElementById("tokenSportsStatsForm").submit();
+        }
+
         function submitGKForm()
         {
             document.getElementById("tokenGKForm").submit();
         }
 
+        function submitGKStatsForm()
+        {
+            document.getElementById("tokenGKStatsForm").submit();
+        }
+
         function submitTechForm()
         {
             document.getElementById("tokenTechForm").submit();
+        }
+
+        function submitTechStatsForm()
+        {
+            document.getElementById("tokenTechStatsForm").submit();
         }
     </script>
 </head>
@@ -84,20 +143,24 @@
                 style="text-shadow: 2px 2px rgba(0, 0, 0, 0.8);">
             <b>×</b>
         </a>
-        <br><br>
+        <br><br><br>
         <center>
+            <a href="javascript:;" style="text-shadow: 2px 2px rgba(0, 0, 0, 0.8);">
+                <span class="glyphicon glyphicon-user"></span>&nbsp;YOUR PROFILE<br><hr width="90%">
+            </a>
+
             <a href="javascript:;">
                 <img src="{{id_info.picture}}" style="box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8);">
             </a><br>
 
             <a href="javascript:;" style="text-shadow: 2px 2px rgba(0, 0, 0, 0.8);">
-                Welcome, {{id_info.name}}
+                {{id_info.name}}
             </a>
             <a href="javascript:;" style="text-shadow: 2px 2px rgba(0, 0, 0, 0.8);">
                 {{id_info.email}}
-            </a><br><br><br>
+            </a><br><br><br><br><br>
             <a href="javascript:;" onclick="signOut()" style="text-shadow: 2px 2px rgba(0, 0, 0, 0.8);">
-                Sign Out
+                <span class="glyphicon glyphicon-log-out"></span>&nbsp;&nbsp;Sign Out
             </a>
         </center>
     </div>
@@ -122,7 +185,7 @@
 
         <div id="our_team" class="tabcontent" style="box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8);">
             <div class="our_team_row">
-                <br><br>
+                <br>
                 <div class="our_team_column">
                     <img src="/static/images/team_member_sujata.jpg" class="our_team_img"
                             style="box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8);"><br><br>
@@ -183,14 +246,27 @@
                     <form action="/quiz_rules" method="post" name="tokenTechForm" id="tokenTechForm">
                         <input type="hidden" id="idToken" name="idToken" value="{{id_token}}">
                         <input type="hidden" id="topic" name="topic" value="Technology">
-
-                        <a href="javascript:;" onclick="submitTechForm()">
-
-                            <img class="quiz_pref_img" src="/static/images/preference_technology.png"
-                                    style="box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8);">
-                        </a>
                     </form>
 
+                    <form action="/statistics" method="post" name="tokenTechStatsForm" id="tokenTechStatsForm">
+                        <input type="hidden" id="idToken" name="idToken" value="{{id_token}}">
+                        <input type="hidden" id="topic" name="topic" value="Technology">
+                    </form>
+
+                    <div class="fade_img">
+                        <img class="quiz_pref_img" src="/static/images/preference_technology.png"
+                                style="box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8);">
+
+                        <div class="middle">
+                            <a href="javascript:;" onclick="submitTechForm()">
+                                <div class="text"><b>Take a Quiz</b></div>
+                            </a><br><br><br>
+
+                            <a href="javascript:;" onclick="submitTechStatsForm()">
+                                <div class="text"><b>See result stats</b></div>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -199,12 +275,27 @@
                     <form action="/quiz_rules" method="post" name="tokenGKForm" id="tokenGKForm">
                         <input type="hidden" id="idToken" name="idToken" value="{{id_token}}">
                         <input type="hidden" id="topic" name="topic" value="GK">
-
-                        <a href="javascript:;" onclick="submitGKForm()">
-                            <img class="quiz_pref_img" src="/static/images/preference_gk.png"
-                                    style="box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8);">
-                        </a>
                     </form>
+
+                    <form action="/statistics" method="post" name="tokenGKStatsForm" id="tokenGKStatsForm">
+                        <input type="hidden" id="idToken" name="idToken" value="{{id_token}}">
+                        <input type="hidden" id="topic" name="topic" value="GK">
+                    </form>
+
+                    <div class="fade_img">
+                        <img class="quiz_pref_img" src="/static/images/preference_gk.png"
+                                style="box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8);">
+
+                        <div class="middle">
+                            <a href="javascript:;" onclick="submitGKForm()">
+                                <div class="text"><b>Take a Quiz</b></div>
+                            </a><br><br><br>
+
+                            <a href="javascript:;" onclick="submitGKStatsForm()">
+                                <div class="text"><b>See result stats</b></div>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -213,12 +304,27 @@
                     <form action="/quiz_rules" method="post" name="tokenSportsForm" id="tokenSportsForm">
                         <input type="hidden" id="idToken" name="idToken" value="{{id_token}}">
                         <input type="hidden" id="topic" name="topic" value="Sports">
-
-                        <a href="javascript:;" onclick="submitSportsForm()">
-                            <img class="quiz_pref_img" src="/static/images/preference_sports.png"
-                                    style="box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8);">
-                        </a>
                     </form>
+
+                    <form action="/statistics" method="post" name="tokenSportsStatsForm" id="tokenSportsStatsForm">
+                        <input type="hidden" id="idToken" name="idToken" value="{{id_token}}">
+                        <input type="hidden" id="topic" name="topic" value="Sports">
+                    </form>
+
+                    <div class="fade_img">
+                        <img class="quiz_pref_img" src="/static/images/preference_sports.png"
+                                style="box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8);">
+
+                        <div class="middle">
+                            <a href="javascript:;" onclick="submitSportsForm()">
+                                <div class="text"><b>Take a Quiz</b></div>
+                            </a><br><br><br>
+
+                            <a href="javascript:;" onclick="submitSportsStatsForm()">
+                                <div class="text"><b>See result stats</b></div>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

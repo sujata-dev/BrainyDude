@@ -5,6 +5,7 @@ from sqlite3 import Error
 import spacy
 import time
 import re
+from datetime import datetime
 
 
 DATABASE = "brainydude.db"
@@ -21,29 +22,33 @@ SQL_CREATE_TABLE = """create table `{0}`(
 
 POINTS = 0
 NLP = spacy.load('en_core_web_sm')
+MAIN_TABLE_NAME = ""
 
 
 # drop the table if the quiz is left midway, (error or time out)
 def store_in_DB(id_info, CURRENT_QUESTION_ITEMS):
     global POINTS
     global SQL_CREATE_TABLE
+    global MAIN_TABLE_NAME
+
     email_id = id_info["email"]
     POINTS = 0
-
-    if CURRENT_QUESTION_ITEMS["topic"] == "Miscellaneous":
-        table_prefix = "demo"
-
-    elif topic in ["Sports", "GK", "Technology"]:
-        table_prefix = int(time.time()) + "main" + topic
-
-    table_name = table_prefix + "_table_" + email_id
 
     conn = create_connection()
     cur = conn.cursor()
 
     if CURRENT_QUESTION_ITEMS["question_number"] == 1:
-        cur.execute("drop table if exists `%s`;" % table_name)
-        create_table(cur, SQL_CREATE_TABLE.format(table_name))
+        if CURRENT_QUESTION_ITEMS["topic"] == "Miscellaneous":
+            table_prefix = "demo"
+
+        elif CURRENT_QUESTION_ITEMS["topic"] in ["Sports", "GK", "Technology"]:
+            table_prefix = str(int(time.time())) + "main" + \
+                CURRENT_QUESTION_ITEMS["topic"]
+
+        MAIN_TABLE_NAME = table_prefix + "_table_" + email_id
+
+        cur.execute("drop table if exists `%s`;" % MAIN_TABLE_NAME)
+        create_table(cur, SQL_CREATE_TABLE.format(MAIN_TABLE_NAME))
 
     time_taken = (
         float(
@@ -62,7 +67,7 @@ def store_in_DB(id_info, CURRENT_QUESTION_ITEMS):
             CURRENT_QUESTION_ITEMS["description"],
             points_scored
         )
-        insert_data(cur, table_name, q_items)
+        insert_data(cur, MAIN_TABLE_NAME, q_items)
 
     # CURRENT_QUESTION_ITEMS["topic"]
     conn.commit()
@@ -144,17 +149,36 @@ def check_if_demo_table_exists(email_id):
             table_name[0] +
                 "';"):
             if(count[0] < 10):
-                print("deleting")
+                print("deleting..")
                 cur.execute("drop table '" + table_name[0] + "';")
             elif(count[0] == 10):
-                print(count[0])
                 exists = True
 
     conn.close()
     return exists
 
 
-def extract_question_item_from_demo_table(email_id):
+def deleting_tables_with_lesser_records():
+    conn = create_connection()
+    cur = conn.cursor()
+
+    cur.execute("select name from sqlite_master where type='table' and (name like \"%Sports%\" or name like \"%GK%\"  or name like \"%Technology%\");")
+
+    for table_name in cur.fetchall():
+        for count in cur.execute(
+            "select COUNT(*) from '" +
+            table_name[0] +
+                "';"):
+            if(count[0] < 10):
+                print("deleting..")
+                cur.execute("drop table '" + table_name[0] + "';")
+
+    conn.close()
+
+
+def extract_question_item_from_table(email_id, topic):
+    global MAIN_TABLE_NAME
+
     question_item = {}
     question_item["question_number"] = []
     question_item["difficulty_level"] = []
@@ -167,9 +191,16 @@ def extract_question_item_from_demo_table(email_id):
 
     conn = create_connection()
     cur = conn.cursor()
+
+    if topic == "Miscellaneous":
+        query = "demo%" + email_id
+
+    elif topic in ["Sports", "GK", "Technology"]:
+        query = MAIN_TABLE_NAME
+
     for table_name in cur.execute(
-        "select name from sqlite_master where type='table' AND name like \"demo%" +
-        email_id +
+        "select name from sqlite_master where type='table' AND name like \"" +
+        query +
             "\";"):
         for item in cur.execute("select * from '" + table_name[0] + "';"):
             question_item["question_number"].append(item[0])
@@ -183,4 +214,35 @@ def extract_question_item_from_demo_table(email_id):
 
     question_item["total_points"] = sum(question_item["point_scored"])
 
+    conn.close()
     return question_item
+
+
+def extract_stats_from_table(email_id, topic):
+    graph_items = []
+    i = 0
+
+    conn = create_connection()
+    cur = conn.cursor()
+
+    cur.execute(
+        "select name from sqlite_master where type='table' and name like \"%" +
+        topic +
+        "%\" and name like \"%" +
+        email_id +
+        "\";")
+
+    for table_name in cur.fetchall():
+        ts = re.search(r"^\d*", table_name[0])
+        ts = int(ts.group())
+
+        quiz_date = str(datetime.utcfromtimestamp(
+            ts).strftime('%d %B, %Y %H:%M:%S'))
+        graph_items.append([])
+        graph_items[i].append(quiz_date)
+        for total_points in cur.execute(
+                "select sum(points_scored) from '" + table_name[0] + "';"):
+            graph_items[i].append(total_points[0])
+            i += 1
+
+    return graph_items

@@ -30,11 +30,13 @@
 
         <p style="font-size:25px">You got a score of </p>
         <p style="font-size:30px"><b>{{total_points}}</b></p><br>
-        <p style="font-size:20px">in <b>DEMO</b> Quiz</p>
+        <p style="font-size:20px">in <b>{{topic}}</b> Quiz</p>
         <br><br><br><br>
 
 
-        <button class="collapsible"><b>SEE YOUR MCQ ANSWERS (QUESTION 1-9)</b></button>
+        <button class="collapsible" style="text-shadow: 2px 2px rgba(0, 0, 0, 0.8);">
+            <b>SEE YOUR MCQ ANSWERS (QUESTION 1-9)</b>
+        </button>
         <div class="content"><br><br>
             <table id="result">
                 <tr>
@@ -74,7 +76,7 @@
         </div>
         <br><br><br>
 
-        <button class="collapsible"><b>SEE YOUR SUBJECTIVE ANSWER (QUESTION 10)</b></button>
+        <button class="collapsible" style="text-shadow: 2px 2px rgba(0, 0, 0, 0.8);"><b>SEE YOUR SUBJECTIVE ANSWER (QUESTION 10)</b></button>
         <div class="content"><br><br>
             <table>
                 <tr>
@@ -98,7 +100,7 @@
                     <td><p style="font-size:15px;padding: 15px;">
                         <b>:</b>
                     </p></td>
-                    <td><p id="time_taken_10" style="font-size:20px;padding: 15px;">
+                    <td><p id="time_taken_10" style="font-size:15px;padding: 15px;">
                     </p></td>
                 </tr>
             </table>
@@ -208,11 +210,13 @@
                 }
             }
         </script>
-        <br><br>
+        <br><br><br>
 
-        <a href="{{url_for('index')}}"><button type="button" class="button">
-            <b>⬅</b> Go Back to Main Page
-        </button></a>
+        <a href="{{url_for('index')}}">
+            <button type="button" class="button" style="text-shadow: 2px 2px rgba(0, 0, 0, 0.8);">
+                <b>⬅</b> Go Back to Home Page
+            </button>
+        </a>
     </center><br>
 </body>
 </html>

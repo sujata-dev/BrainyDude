@@ -9,7 +9,15 @@ from datetime import datetime
 
 
 DATABASE = "brainydude.db"
-SQL_CREATE_TABLE = """create table `{0}`(
+
+NLP = spacy.load('en_core_web_sm')
+
+
+# drop the table if the quiz is left midway, (error or time out)
+def store_in_DB(main_table_name, id_info, CURRENT_QUESTION_ITEMS):
+    email_id = id_info["email"]
+
+    SQL_CREATE_TABLE = """create table `{0}`(
                         question_number     integer primary key,
                         difficulty_level    text,
                         question            text,
@@ -19,20 +27,6 @@ SQL_CREATE_TABLE = """create table `{0}`(
                         description         text,
                         points_scored       integer
                     );"""
-
-POINTS = 0
-NLP = spacy.load('en_core_web_sm')
-MAIN_TABLE_NAME = ""
-
-
-# drop the table if the quiz is left midway, (error or time out)
-def store_in_DB(id_info, CURRENT_QUESTION_ITEMS):
-    global POINTS
-    global SQL_CREATE_TABLE
-    global MAIN_TABLE_NAME
-
-    email_id = id_info["email"]
-    POINTS = 0
 
     conn = create_connection()
     cur = conn.cursor()
@@ -45,15 +39,16 @@ def store_in_DB(id_info, CURRENT_QUESTION_ITEMS):
             table_prefix = str(int(time.time())) + "main" + \
                 CURRENT_QUESTION_ITEMS["topic"]
 
-        MAIN_TABLE_NAME = table_prefix + "_table_" + email_id
+        main_table_name = table_prefix + "_table_" + email_id
 
-        cur.execute("drop table if exists `%s`;" % MAIN_TABLE_NAME)
-        create_table(cur, SQL_CREATE_TABLE.format(MAIN_TABLE_NAME))
+        cur.execute("drop table if exists `%s`;" % main_table_name)
+        create_table(cur, SQL_CREATE_TABLE.format(main_table_name))
 
     time_taken = (
         float(
             CURRENT_QUESTION_ITEMS["time_taken"]) / CURRENT_QUESTION_ITEMS["time_limit"]) * 100
     time_taken = str(round(time_taken, 2)) + "%"
+
     points_scored = get_score(CURRENT_QUESTION_ITEMS)
 
     with conn:
@@ -67,11 +62,13 @@ def store_in_DB(id_info, CURRENT_QUESTION_ITEMS):
             CURRENT_QUESTION_ITEMS["description"],
             points_scored
         )
-        insert_data(cur, MAIN_TABLE_NAME, q_items)
+        insert_data(cur, main_table_name, q_items)
 
     # CURRENT_QUESTION_ITEMS["topic"]
     conn.commit()
     conn.close()
+
+    return main_table_name
 
 
 def create_connection():
@@ -96,7 +93,7 @@ def create_table(cur, SQL_CREATE_TABLE):
         print(e)
 
 
-def insert_data(cur, table_name, q_items):
+def insert_data(cur, main_table_name, q_items):
     sql_insert_statement = '''insert into `{0}`(
                                 question_number,
                                 difficulty_level,
@@ -109,21 +106,22 @@ def insert_data(cur, table_name, q_items):
                             )
                             values(?, ?, ?, ?, ?, ?, ?, ?)'''
 
-    cur.execute(sql_insert_statement.format(table_name), q_items)
+    cur.execute(sql_insert_statement.format(main_table_name), q_items)
     return cur.lastrowid
 
 
 def get_score(CURRENT_QUESTION_ITEMS):
-    global POINTS
+    points = 0
+
     if(CURRENT_QUESTION_ITEMS["question_number"] < 10):
         if(CURRENT_QUESTION_ITEMS["answer_ticked"] == CURRENT_QUESTION_ITEMS["correct_answer"]):
-            POINTS = {"Easy": 2, "Medium": 3, "Hard": 5}.get(
+            points = {"Easy": 2, "Medium": 3, "Hard": 5}.get(
                 CURRENT_QUESTION_ITEMS["difficulty_level"])
 
     elif(CURRENT_QUESTION_ITEMS["question_number"] == 10):
-        POINTS = find_accuracy_spacy(CURRENT_QUESTION_ITEMS)
+        points = find_accuracy_spacy(CURRENT_QUESTION_ITEMS)
 
-    return POINTS
+    return points
 
 
 def find_accuracy_spacy(CURRENT_QUESTION_ITEMS):
@@ -140,6 +138,7 @@ def check_if_demo_table_exists(email_id):
     conn = create_connection()
     cur = conn.cursor()
     exists = False
+
     for table_name in cur.execute(
         "select name from sqlite_master where type='table' AND name like \"demo%" +
         email_id +
@@ -176,9 +175,7 @@ def deleting_tables_with_lesser_records():
     conn.close()
 
 
-def extract_question_item_from_table(email_id, topic):
-    global MAIN_TABLE_NAME
-
+def extract_question_item_from_table(main_table_name, email_id, topic):
     question_item = {}
     question_item["question_number"] = []
     question_item["difficulty_level"] = []
@@ -196,7 +193,7 @@ def extract_question_item_from_table(email_id, topic):
         query = "demo%" + email_id
 
     elif topic in ["Sports", "GK", "Technology"]:
-        query = MAIN_TABLE_NAME
+        query = main_table_name
 
     for table_name in cur.execute(
         "select name from sqlite_master where type='table' AND name like \"" +

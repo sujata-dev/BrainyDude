@@ -7,6 +7,7 @@ import json
 import os
 import requests
 import traceback
+import ast
 
 import quizSection
 import storeInDB
@@ -14,12 +15,6 @@ import tokenSection
 
 
 app = Flask(__name__)
-
-
-QUESTION_NUMBER = 0
-DIFFICULTY_LEVEL = 1
-CORRECT_ANS = ""
-CURRENT_QUESTION_ITEMS = {}
 
 ERROR_PAGE_TEMPLATE_FILE = "error_page.html"
 INDEX_PAGE_TEMPLATE_FILE = "index_page.html"
@@ -36,8 +31,6 @@ STATS_NOT_AVAILABLE_TEMPLATE_FILE = "no_stats_available.html"
 @app.route("/")
 def index():
     global INDEX_PAGE_TEMPLATE_FILE
-    global QUESTION_NUMBER
-    QUESTION_NUMBER = 0
 
     return render_template(INDEX_PAGE_TEMPLATE_FILE)
 
@@ -45,8 +38,6 @@ def index():
 @app.route("/get_started", methods=["GET", "POST"])
 def get_started():
     global DASHBOARD_PAGE_TEMPLATE_FILE, ERROR_PAGE_TEMPLATE_FILE
-    global QUESTION_NUMBER
-    QUESTION_NUMBER = 0
 
     try:
         if(request.method == "POST"):
@@ -74,8 +65,8 @@ def get_started():
 @app.route("/quiz_rules", methods=["GET", "POST"])
 def quiz_rules():
     global QUIZ_RULE_PAGE_TEMPLATE_FILE, ERROR_PAGE_TEMPLATE_FILE
-    global QUESTION_NUMBER
-    QUESTION_NUMBER = 0
+    question_no = 0
+    difficulty_level = 1
 
     try:
         if(request.method == "POST"):
@@ -87,7 +78,9 @@ def quiz_rules():
                 return render_template(
                     QUIZ_RULE_PAGE_TEMPLATE_FILE,
                     id_token=id_token,
-                    topic=topic)
+                    topic=topic,
+                    question_no=question_no,
+                    difficulty_level=difficulty_level)
 
         return render_template(ERROR_PAGE_TEMPLATE_FILE)
 
@@ -95,23 +88,22 @@ def quiz_rules():
         traceback.print_exc()
 
 
-def predict_difficulty(CORRECT_ANS, previous_ans_ticked, DIFFICULTY_LEVEL):
-    if CORRECT_ANS == previous_ans_ticked and DIFFICULTY_LEVEL <= 2:
-        DIFFICULTY_LEVEL += 1
+def predict_difficulty(correct_ans, previous_ans_ticked, difficulty_level):
+    if correct_ans == previous_ans_ticked and difficulty_level <= 2:
+        difficulty_level += 1
 
-    elif DIFFICULTY_LEVEL >= 2:
-        DIFFICULTY_LEVEL -= 1
+    elif difficulty_level >= 2:
+        difficulty_level -= 1
 
-    return DIFFICULTY_LEVEL
+    return difficulty_level
 
 
 @app.route("/quiz", methods=["GET", "POST"])
 def quiz():
     global MCQ_QUIZ_PAGE_TEMPLATE_FILE, SUBJECTIVE_QUIZ_PAGE_TEMPLATE_FILE, ERROR_PAGE_TEMPLATE_FILE
-    global DIFFICULTY_LEVEL, CURRENT_QUESTION_ITEMS, CORRECT_ANS
-    global QUESTION_NUMBER
 
     template_file = ""
+    main_table_name = ""
 
     try:
         if(request.method == "POST"):
@@ -120,52 +112,74 @@ def quiz():
             previous_ans_ticked = request.form.get("answerTicked")
             previous_time_taken = request.form.get("timeTaken")
 
+            question_no = int(request.form.get("question_no"))
+            difficulty_level = int(request.form.get("difficulty_level"))
+            correct_ans = request.form.get("correct_ans")
+
+            current_question_items = request.form.get("current_question_items")
+            main_table_name = request.form.get("main_table_name")
+
+            if current_question_items is not None:
+                current_question_items = ast.literal_eval(
+                    current_question_items)
+
+            if current_question_items is None:
+                current_question_items = {}
+
             id_info = tokenSection.get_data_from_token(id_token)
             if(bool(id_info)):
                 if previous_time_taken is not None:
-                    CURRENT_QUESTION_ITEMS["time_taken"] = previous_time_taken
+                    current_question_items["time_taken"] = previous_time_taken
 
-                    if QUESTION_NUMBER <= 10:
-                        CURRENT_QUESTION_ITEMS["answer_ticked"] = previous_ans_ticked
+                    if question_no <= 10:
+                        current_question_items["answer_ticked"] = previous_ans_ticked
 
-                    storeInDB.store_in_DB(id_info, CURRENT_QUESTION_ITEMS)
+                    main_table_name = storeInDB.store_in_DB(
+                        main_table_name, id_info, current_question_items)
 
-                QUESTION_NUMBER += 1
+                question_no += 1
 
                 if(topic == "Miscellaneous"):
                     question_item = quizSection.demo_questions(
-                        topic, QUESTION_NUMBER)
+                        topic, question_no)
 
                 elif topic in ["Sports", "GK", "Technology"]:
-                    DIFFICULTY_LEVEL = predict_difficulty(
-                        CORRECT_ANS, previous_ans_ticked, DIFFICULTY_LEVEL)
+                    difficulty_level = predict_difficulty(
+                        correct_ans, previous_ans_ticked, difficulty_level)
+
                     question_item = quizSection.main_questions(
-                        topic, QUESTION_NUMBER, DIFFICULTY_LEVEL)
+                        topic, question_no, difficulty_level)
 
-                if bool(question_item) and QUESTION_NUMBER <= 10:
-                    CURRENT_QUESTION_ITEMS.update(question_item)
+                if bool(question_item) and question_no <= 10:
+                    current_question_items.update(question_item)
 
-                    if QUESTION_NUMBER < 10:
-                        CORRECT_ANS = question_item["correct_answer"]
+                    if question_no < 10:
+                        correct_ans = question_item["correct_answer"]
                         template_file = MCQ_QUIZ_PAGE_TEMPLATE_FILE
 
-                    elif QUESTION_NUMBER == 10:
+                    elif question_no == 10:
                         template_file = SUBJECTIVE_QUIZ_PAGE_TEMPLATE_FILE
 
                     return render_template(
                         template_file,
                         id_token=id_token,
                         id_info=id_info,
-                        question_no=QUESTION_NUMBER,
-                        question_item=question_item
+                        difficulty_level=difficulty_level,
+                        question_no=question_no,
+                        question_item=question_item,
+                        correct_ans=correct_ans,
+                        current_question_items=current_question_items,
+                        main_table_name=main_table_name
                     )
 
-        if QUESTION_NUMBER > 10:
+        if question_no > 10:
             # return redirect(url_for('result_page', id_info=id_info))
             return render_template(
                 "results_are_ready.html",
                 id_token=id_token,
-                topic=topic)
+                topic=topic,
+                main_table_name=main_table_name
+            )
 
         return render_template(ERROR_PAGE_TEMPLATE_FILE)
 
@@ -179,11 +193,12 @@ def result_page():
         if(request.method == "POST"):
             id_token = request.form.get("idToken")
             topic = request.form.get("topic")
+            main_table_name = request.form.get("main_table_name")
 
             id_info = tokenSection.get_data_from_token(id_token)
             if(bool(id_info)):
                 question_item = storeInDB.extract_question_item_from_table(
-                    id_info["email"], topic)
+                    main_table_name, id_info["email"], topic)
 
                 return render_template(
                     RESULT_PAGE_TEMPLATE_FILE,

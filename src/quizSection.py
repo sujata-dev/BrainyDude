@@ -18,13 +18,8 @@ TECH_MCQS_FILE = PATH + "/" + "techMCQs.csv"
 TECH_SUBJECTIVE_FILE = PATH + "/" + "techSubjective.csv"
 
 
-MCQS_FILE = ""
-SUBJECTIVE_FILE = ""
-
-quizdata = []
-
-
 def main_questions(topic, QUESTION_NUMBER, DIFFICULTY_LEVEL):
+    quizdata = []
     question_item = {}
     question_item["question_number"] = QUESTION_NUMBER
     question_item["topic"] = topic

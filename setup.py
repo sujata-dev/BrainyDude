@@ -3,8 +3,8 @@
 from setuptools import setup
 
 setup(
-    name='BrainyDudeHeroku',
-    packages=['BrainyDudeHeroku'],
+    name='BrainyDude',
+    packages=['BrainyDude'],
     include_package_data=True,
     install_requires=[
         'flask', 'spacy',

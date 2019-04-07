@@ -5,9 +5,13 @@ from sqlite3 import Error
 import time
 import re
 from datetime import datetime
+
+import spacy
 import en_core_web_sm
 
 DATABASE = "brainydude.db"
+
+NLP = spacy.load('en_core_web_sm')
 
 # drop the table if the quiz is left midway, (error or time out)
 def store_in_DB(main_table_name, id_info, CURRENT_QUESTION_ITEMS):

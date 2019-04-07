@@ -2,7 +2,6 @@
 
 import sqlite3
 from sqlite3 import Error
-import spacy
 import time
 import re
 from datetime import datetime

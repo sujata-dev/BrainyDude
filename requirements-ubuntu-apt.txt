@@ -1,0 +1,6 @@
+python3-flask
+python3-bs4
+python3-google-auth
+python3-gunicorn
+python3-protobuf
+python3-requests

@@ -1,3 +1,4 @@
+gunicorn3
 python3-bs4
 python3-flask
 python3-google-auth

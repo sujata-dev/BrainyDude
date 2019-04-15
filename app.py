@@ -26,6 +26,13 @@ RESULT_PAGE_TEMPLATE_FILE = 'result_page.html'
 ALREADY_ATTEMPTED_DEMO_QUIZ_TEMPLATE_FILE = 'already_attempted_demo_quiz.html'
 STATS_AVAILABLE_TEMPLATE_FILE = "stats_available.html"
 STATS_NOT_AVAILABLE_TEMPLATE_FILE = "no_stats_available.html"
+PRIVACY_POLICY_PAGE = "privacy_policy.html"
+
+
+@app.route("/privacy_policy")
+def privacy_policy():
+    return render_template(PRIVACY_POLICY_PAGE)
+
 
 
 @app.route("/")

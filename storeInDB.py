@@ -8,8 +8,9 @@ from datetime import datetime
 
 import spacy
 import en_core_web_sm
+import os
 
-DATABASE = "brainydude.db"
+DATABASE = os.environ['HOME'] + "/brainydude.db"
 
 NLP = spacy.load('en_core_web_sm')
 

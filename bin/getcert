@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+sudo letsencrypt --email 'mail@sujata.dev' \
+    --domains 'brainydude.sujata.dev' --agree-tos --renew-by-default --manual \
+    certonly --preferred-challenges 'dns-01' \
+    --server 'https://acme-v02.api.letsencrypt.org/directory' && \
+sudo cp /etc/letsencrypt/live/brainydude.sujata.dev/{fullchain,privkey}.pem "$HOME/certs/" && \
+sudo chown "$USER:$USER" -hR "$HOME/certs/"

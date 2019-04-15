@@ -1,0 +1,20 @@
+[Unit]
+Description=Brainy Dude
+After=network.target
+
+[Service]
+ExecStart=-/usr/bin/gunicorn3 \
+            --keyfile '/home/ubuntu/certs/privkey.pem' \
+            --certfile '/home/ubuntu/certs/fullchain.pem' \
+            --bind 0.0.0.0:443 \
+            --workers 3 \
+            --chdir /opt/brainydude \
+            app:app
+
+User=ubuntu
+Group=ubuntu
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
